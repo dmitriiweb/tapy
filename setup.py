@@ -46,7 +46,7 @@ setup(
     license='MIT',
     keywords='technical analyse indicators pandas forex stocks',
     classifiers=[
-        "Development Status :: 1 - Planning",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Developers",
         "Intended Audience :: Financial and Insurance Industry",
         "License :: OSI Approved :: MIT License",
