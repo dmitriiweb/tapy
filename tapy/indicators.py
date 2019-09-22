@@ -12,7 +12,15 @@ class Indicators:
         >>> df = pd.read_csv('EURUSD60.csv')
         >>> indicators = Indicators(df)
     """
-    def __init__(self, df, open_col='Open', high_col='High', low_col='Low', close_col='Close', volume_col='Volume'):
+    def __init__(
+            self,
+            df,
+            open_col='Open',
+            high_col='High',
+            low_col='Low',
+            close_col='Close',
+            volume_col='Volume'
+    ):
         """
         Initiate Indicators object
 
