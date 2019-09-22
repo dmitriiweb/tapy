@@ -14,14 +14,14 @@ develop: venv piplocal
 
 .PHONY: lint lint-flake8 lint-isort
 lint-flake8:
-	flake8
+	flake8 test tapy
 lint-isort:
-	isort --check-only -rc geopy test *.py
+	isort --check-only -rc tapy test *.py
 lint: lint-flake8 lint-isort
 
 .PHONY: format
 format:
-	isort -rc geopy test *.py
+	isort -rc tapy test *.py
 
 .PHONY: test
 test:
