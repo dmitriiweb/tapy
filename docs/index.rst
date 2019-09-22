@@ -6,3 +6,24 @@
 Welcome to tapy's documentation!
 ================================
 
+:Source Code: https://github.com/dmitriiweb/tapy
+:Issue Tracker: https://github.com/dmitriiweb/tapy/issues
+:PyPi: https://pypi.org/project/tapy/
+
+.. automodule:: tapy
+   :members: __doc__
+
+.. toctree::
+   :maxdepth: 3
+   :caption: Contents
+
+   index
+
+Installation
+~~~~~~~~~~~~
+::
+
+   pip install tapy
+
+Indicators
+~~~~~~~~~~
