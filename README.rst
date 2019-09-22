@@ -3,7 +3,7 @@ tapy
 
 Technical Indicators for the Pandas' Dataframes
 
-Documentation: https://tapy.readthedocs.io
+Documentation: https://pandastechindicators.readthedocs.io/en/latest/
 
 Installation
 ------------
@@ -15,5 +15,5 @@ Installation
 Available Indicators
 --------------------
 
-1. None
+1. SMA (Simple Moving Average)
 

@@ -20,10 +20,17 @@ Welcome to tapy's documentation!
    index
 
 Installation
-~~~~~~~~~~~~
+------------
 ::
 
    pip install tapy
 
 Indicators
-~~~~~~~~~~
+----------
+.. autoclass:: tapy.Indicators
+.. automodule:: __init__
+
+SMA (Simple Moving Average)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: tapy.Indicators.sma
+

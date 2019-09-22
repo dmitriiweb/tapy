@@ -10,6 +10,6 @@ pip install -U tapy
 
 ## Available Indicators
 
-1. None
+1. SMA (Simple Moving Average)
 
 
