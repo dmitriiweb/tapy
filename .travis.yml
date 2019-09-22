@@ -1,0 +1,50 @@
+language: python
+dist: xenial
+
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8-dev"
+
+matrix:
+  allow_failures:
+    - python: "3.8-dev"
+
+before_install:
+  - travis_retry pip install -U pip wheel setuptools
+
+install:
+  - travis_retry pip install -e
+
+stages:
+  - lint
+  - rst
+  - test
+
+# Used in the `test` stage.
+before_script:
+  - travis_retry pip install -e ".[dev-test]"
+script:
+  - make test
+
+jobs:
+  include:
+    - stage: lint
+      name: "Linting"
+      python: "3.7"
+      before_script:
+        - travis_retry pip install -e ".[dev-lint]"
+      script:
+        - make lint
+
+    - stage: rst
+      name: "RST (README.rst + docs) syntax check"
+      python: "3.7"
+      before_script:
+        - travis_retry pip install -e ".[dev-docs]"
+      script:
+        - make rst_check
+
+    # The `test` stage using the `python` matrix above is included implicitly.
+
