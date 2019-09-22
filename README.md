@@ -1,7 +1,7 @@
 # tapy
 Technical Indicators for the Pandas' Dataframes
 
-Documentation: https://tapy.readthedocs.io
+Documentation: https://pandastechindicators.readthedocs.io/en/latest/
 
 ## Installation
 ```
