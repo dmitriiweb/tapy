@@ -41,38 +41,47 @@ class Indicators:
             and require only if indicator use this data.
         """
         self.df = df
-        self.open_col = open_col
-        self.high_col = high_col
-        self.low_col = low_col
-        self.close_col = close_col
-        self.volume_col = volume_col
+        self.columns = {
+            'Open': open_col,
+            'High': high_col,
+            'Low': low_col,
+            'Close': close_col,
+            'Volume': volume_col
+        }
 
-    def sma(self, period=5, column_name='sma'):
+    def sma(self, period=5, column_name='sma', apply_to='Close'):
         """
         Simple Moving Average (SMA)
         ---------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#simple_moving_average
 
-            >>> indicators.sma(period=5, column_name='sma')
+            >>> indicators.sma(period=5, column_name='sma', apply_to='Close')
 
             :param int period: the number of calculation periods, default: 5
             :param str column_name: Column name, default: sma
+            :param str apply_to: Which column use for calculation.
+                Can be *"Open"*, *"High"*, *"Low"* and *"Close"*.
+                **Default**: Close
             :return: None
 
         """
-        self.df[column_name] = self.df[self.close_col].rolling(window=period).mean()
+        self.df[column_name] = self.df[self.columns[apply_to]].rolling(window=period).mean()
 
-    def ema(self, period=5, column_name='ema'):
+    def ema(self, period=5, column_name='ema', apply_to='Close'):
         """
         Exponential Moving Average (EMA)
         ---------------------
+
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#exponential_moving_average
 
-            >>> indicators.ema(period=5, column_name='ema')
+            >>> indicators.ema(period=5, column_name='ema', apply_to='Close')
 
             :param int period: the number of calculation periods, default: 5
             :param str column_name: Column name, default: ema
+            :param str apply_to: Which column use for calculation.
+                Can be *"Open"*, *"High"*, *"Low"* and *"Close"*.
+                **Default**: Close
             :return: None
 
         """
-        self.df[column_name] = self.df[self.close_col].ewm(span=period, adjust=False).mean()
+        self.df[column_name] = self.df[self.columns[apply_to]].ewm(span=period, adjust=False).mean()
