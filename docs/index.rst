@@ -35,4 +35,5 @@ Indicators
 .. automodule:: tapy.Indicators.awesome_oscillator
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma
+.. automodule:: tapy.Indicators.smma
 

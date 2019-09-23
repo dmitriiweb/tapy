@@ -1,8 +1,8 @@
 import pandas as pd
 
-from .utils import calculate_ao, calculate_sma
+from .utils import calculate_ao, calculate_sma, calculate_smma
 
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 
 
 class Indicators:
@@ -15,14 +15,16 @@ class Indicators:
         >>> from tapy import Indicators
         >>> df = pd.read_csv('EURUSD60.csv')
         >>> indicators = Indicators(df)
-        >>> indicators.sma(period=3, column_name='SMA_3')
+        >>> indicators.accelerator_oscillator(column_name='AC')
+        >>> indicators.sma()
+        >>> df = indicators.df
         >>> df.tail()
-              Date   Time     Open     High      Low    Close  Volume     SMA_3
-        2019.09.20  16:00  1.10022  1.10105  1.10010  1.10070    2888  1.100667
-        2019.09.20  17:00  1.10068  1.10193  1.10054  1.10184    6116  1.100920
-        2019.09.20  18:00  1.10186  1.10194  1.10095  1.10144    3757  1.101327
-        2019.09.20  19:00  1.10146  1.10215  1.10121  1.10188    3069  1.101720
-        2019.09.20  20:00  1.10184  1.10215  1.10147  1.10167    1224  1.101663
+                    Date   Time     Open     High      Low    Close  Volume        AC       sma
+        3723  2019.09.20  16:00  1.10022  1.10105  1.10010  1.10070    2888 -0.001155  1.101296
+        3724  2019.09.20  17:00  1.10068  1.10193  1.10054  1.10184    6116 -0.000820  1.101158
+        3725  2019.09.20  18:00  1.10186  1.10194  1.10095  1.10144    3757 -0.000400  1.101056
+        3726  2019.09.20  19:00  1.10146  1.10215  1.10121  1.10188    3069  0.000022  1.101216
+        3727  2019.09.20  20:00  1.10184  1.10215  1.10147  1.10167    1224  0.000388  1.101506
     """
 
     def __init__(
@@ -72,6 +74,25 @@ class Indicators:
         """
         calculate_sma(self.df, period, column_name, apply_to)
 
+    def smma(self, period=5, column_name='smma', apply_to='Close'):
+        """
+        Simple Moving Average (SMMA)
+        ---------------------
+            https://www.metatrader4.com/ru/trading-platform/help/analytics/tech_indicators/moving_average#smoothed_moving_average
+
+            >>> indicators.smma(period=5, column_name='smma', apply_to='Close')
+
+            :param int period: the number of calculation periods, default: 5
+            :param str column_name: Column name, default: smma
+            :param str apply_to: Which column use for calculation.
+                Can be *"Open"*, *"High"*, *"Low"* and *"Close"*.
+                **Default**: Close
+            :return: None
+
+        """
+        df_smma = calculate_smma(self.df, period, column_name, apply_to)
+        self.df = self.df.merge(df_smma, left_index=True, right_index=True)
+
     def ema(self, period=5, column_name='ema', apply_to='Close'):
         """
         Exponential Moving Average (EMA)
@@ -109,8 +130,9 @@ class Indicators:
         df_tmp['Low'] = self.df[self.columns['Low']]
 
         # Calculate Awesome Oscillator
-        calculate_ao(df_tmp, 'ao')
-        self.df[column_name] = df_tmp['ao']
+        calculate_ao(df_tmp, column_name)
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
     def accelerator_oscillator(self, column_name='ac'):
         """
@@ -137,7 +159,9 @@ class Indicators:
         calculate_sma(df_tmp, 5, 'sma_ao', 'ao')
 
         # Calculate Accelerator Oscillator
-        self.df[column_name] = df_tmp['ao'] - df_tmp['sma_ao']
+        df_tmp[column_name] = df_tmp['ao'] - df_tmp['sma_ao']
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
     def accumulation_distribution(self, column_name='a/d'):
         """
@@ -163,4 +187,6 @@ class Indicators:
                                  (df_tmp['close'] - df_tmp['low']) - (df_tmp['high'] - df_tmp['close'])
                          ) * df_tmp['volume'] / (df_tmp['high'] - df_tmp['low'])
 
-        self.df[column_name] = df_tmp['calc'].explode().sum()
+        df_tmp[column_name] = df_tmp['calc'].explode().sum()
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
