@@ -30,6 +30,7 @@ Indicators
 .. autoclass:: tapy.Indicators
 .. automodule:: __init__
 
+.. automodule:: tapy.Indicators.accelerator_oscillator
 .. automodule:: tapy.Indicators.awesome_oscillator
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma

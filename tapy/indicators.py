@@ -1,6 +1,6 @@
 import pandas as pd
 
-from .utils import calculate_sma
+from .utils import calculate_ao, calculate_sma
 
 __version__ = '1.0.1'
 
@@ -105,15 +105,36 @@ class Indicators:
         """
         # Data frame for storing temporary data
         df_tmp = pd.DataFrame()
-
-        mp_col = '_median_price'
-        df_tmp[mp_col] = (self.df[self.columns['High']] + self.df[self.columns['Low']]) / 2
-
-        sma5_col = '_sma5'
-        calculate_sma(df_tmp, 5, sma5_col, mp_col)
-
-        sma34_col = '_sma34'
-        calculate_sma(df_tmp, 34, sma34_col, mp_col)
+        df_tmp['High'] = self.df[self.columns['High']]
+        df_tmp['Low'] = self.df[self.columns['Low']]
 
         # Calculate Awesome Oscillator
-        self.df[column_name] = df_tmp[sma5_col] - df_tmp[sma34_col]
+        calculate_ao(df_tmp, 'ao')
+        self.df[column_name] = df_tmp['ao']
+
+    def accelerator_oscillator(self, column_name='ac'):
+        """
+        Accelerator Oscillator (AC)
+        -----------------------
+
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/awesome_oscillator
+
+            >>> indicators.accelerator_oscillator(column_name='ac')
+
+            :param str column_name: Column name, default: ac
+            :return: None
+        """
+        pass
+        # Data frame for storing temporary data
+        df_tmp = pd.DataFrame()
+        df_tmp['High'] = self.df[self.columns['High']]
+        df_tmp['Low'] = self.df[self.columns['Low']]
+
+        # Calculate Awesome Oscillator
+        calculate_ao(df_tmp, 'ao')
+
+        # Calculate SMA for Awesome Oscillator
+        calculate_sma(df_tmp, 5, 'sma_ao', 'ao')
+
+        # Calculate Accelerator Oscillator
+        self.df[column_name] = df_tmp['ao'] - df_tmp['sma_ao']

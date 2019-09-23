@@ -26,8 +26,9 @@ pip install -U tapy
 
 ## Available Indicators
 
-1. Awesome Oscillator (AO)
-2. Exponential Moving Average (EMA)
-3. Simple Moving Average (SMA)
+1. Accelerator Oscillator (AC)
+2. Awesome Oscillator (AO)
+3. Exponential Moving Average (EMA)
+4. Simple Moving Average (SMA)
 
 
