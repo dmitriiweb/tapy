@@ -76,7 +76,7 @@ class Indicators:
 
     def smma(self, period=5, column_name='smma', apply_to='Close'):
         """
-        Simple Moving Average (SMMA)
+        Smoothed Moving Average (SMMA)
         ---------------------
             https://www.metatrader4.com/ru/trading-platform/help/analytics/tech_indicators/moving_average#smoothed_moving_average
 
