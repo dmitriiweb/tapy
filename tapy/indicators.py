@@ -117,7 +117,7 @@ class Indicators:
         Accelerator Oscillator (AC)
         -----------------------
 
-            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/awesome_oscillator
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/accelerator_decelerator
 
             >>> indicators.accelerator_oscillator(column_name='ac')
 
@@ -138,3 +138,29 @@ class Indicators:
 
         # Calculate Accelerator Oscillator
         self.df[column_name] = df_tmp['ao'] - df_tmp['sma_ao']
+
+    def accumulation_distribution(self, column_name='a/d'):
+        """
+        Accumulation/Distribution (A/D)
+        ---------------------
+
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/accumulation_distribution
+
+            >>> indicators.accumulation_distribution(column_name='a/d')
+
+            :param str column_name: Column name, default: a/d
+            :return: None
+
+        """
+        # Temporary df
+        df_tmp = pd.DataFrame()
+        df_tmp['close'] = self.df[self.columns['Close']]
+        df_tmp['high'] = self.df[self.columns['High']]
+        df_tmp['low'] = self.df[self.columns['Low']]
+        df_tmp['volume'] = self.df[self.columns['Volume']]
+
+        df_tmp['calc'] = (
+                                 (df_tmp['close'] - df_tmp['low']) - (df_tmp['high'] - df_tmp['close'])
+                         ) * df_tmp['volume'] / (df_tmp['high'] - df_tmp['low'])
+
+        self.df[column_name] = df_tmp['calc'].explode().sum()

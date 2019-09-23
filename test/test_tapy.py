@@ -42,3 +42,9 @@ class TestIndicators(unittest.TestCase):
         self.indicators.accelerator_oscillator(column_name=col)
         val = self.get_val(col, -1, 7)
         self.assertEqual(0.0003882, val)
+
+    def test_accumulation_distribution(self):
+        col = 'a/d'
+        self.indicators.accumulation_distribution(column_name=col)
+        val = self.get_val(col, -1, 0)
+        self.assertEqual(-51439.0, val)
