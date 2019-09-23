@@ -28,4 +28,10 @@ class TestIndicators(unittest.TestCase):
         del self.df[col]
         self.assertEqual(1.10164, val)
 
+    def test_awesome_oscillator(self):
+        col = 'ao'
+        self.indicators.awesome_oscillator(column_name=col)
+        val = round(self.df[col].tolist()[-1], 6)
+        del self.df[col]
+        self.assertEqual(-0.002834, val)
 

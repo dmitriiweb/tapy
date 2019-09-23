@@ -35,6 +35,7 @@ Example
 Available Indicators
 --------------------
 
-1. SMA (Simple Moving Average)
+1. Awesome Oscillator (AO)
 2. Exponential Moving Average (EMA)
+3. Simple Moving Average (SMA)
 

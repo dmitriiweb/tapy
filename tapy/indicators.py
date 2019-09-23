@@ -1,3 +1,7 @@
+import pandas as pd
+
+from .utils import calculate_sma
+
 __version__ = '1.0.1'
 
 
@@ -20,6 +24,7 @@ class Indicators:
         2019.09.20  19:00  1.10146  1.10215  1.10121  1.10188    3069  1.101720
         2019.09.20  20:00  1.10184  1.10215  1.10147  1.10167    1224  1.101663
     """
+
     def __init__(
             self,
             df,
@@ -65,7 +70,7 @@ class Indicators:
             :return: None
 
         """
-        self.df[column_name] = self.df[self.columns[apply_to]].rolling(window=period).mean()
+        calculate_sma(self.df, period, column_name, apply_to)
 
     def ema(self, period=5, column_name='ema', apply_to='Close'):
         """
@@ -85,3 +90,30 @@ class Indicators:
 
         """
         self.df[column_name] = self.df[self.columns[apply_to]].ewm(span=period, adjust=False).mean()
+
+    def awesome_oscillator(self, column_name='ao'):
+        """
+        Awesome Oscillator (AO)
+        -----------------------
+
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/awesome_oscillator
+
+            >>> indicators.awesome_oscillator(column_name='ao')
+
+            :param str column_name: Column name, default: ao
+            :return: None
+        """
+        # Data frame for storing temporary data
+        df_tmp = pd.DataFrame()
+
+        mp_col = '_median_price'
+        df_tmp[mp_col] = (self.df[self.columns['High']] + self.df[self.columns['Low']]) / 2
+
+        sma5_col = '_sma5'
+        calculate_sma(df_tmp, 5, sma5_col, mp_col)
+
+        sma34_col = '_sma34'
+        calculate_sma(df_tmp, 34, sma34_col, mp_col)
+
+        # Calculate Awesome Oscillator
+        self.df[column_name] = df_tmp[sma5_col] - df_tmp[sma34_col]
