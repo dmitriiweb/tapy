@@ -31,4 +31,5 @@ Indicators
 .. automodule:: __init__
 
 .. automodule:: tapy.Indicators.sma
+.. automodule:: tapy.Indicators.ema
 

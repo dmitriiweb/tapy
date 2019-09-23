@@ -49,14 +49,30 @@ class Indicators:
 
     def sma(self, period=5, column_name='sma'):
         """
-        Simple Moving Average
+        Simple Moving Average (SMA)
         ---------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#simple_moving_average
-        >>> indicators.sma(period=5, column_name='sma')
 
-        :param int period: the number of calculation periods, default: 5
-        :param str column_name: Column name, default: sma
-        :return: None
+            >>> indicators.sma(period=5, column_name='sma')
+
+            :param int period: the number of calculation periods, default: 5
+            :param str column_name: Column name, default: sma
+            :return: None
 
         """
         self.df[column_name] = self.df[self.close_col].rolling(window=period).mean()
+
+    def ema(self, period=5, column_name='ema'):
+        """
+        Exponential Moving Average (EMA)
+        ---------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#exponential_moving_average
+
+            >>> indicators.ema(period=5, column_name='ema')
+
+            :param int period: the number of calculation periods, default: 5
+            :param str column_name: Column name, default: ema
+            :return: None
+
+        """
+        self.df[column_name] = self.df[self.close_col].ewm(span=period, adjust=False).mean()

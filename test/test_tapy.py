@@ -16,10 +16,16 @@ class TestIndicators(unittest.TestCase):
 
     def test_sma(self):
         col = 'sma'
-        self.indicators.sma(column_name=col)
+        self.indicators.sma(period=5, column_name=col)
         val = round(self.df[col].tolist()[-1], 5)
         del self.df[col]
-        expected_values = 1.10151
-        self.assertEqual(expected_values, val)
+        self.assertEqual(1.10151, val)
+
+    def test_ema(self):
+        col = 'ema'
+        self.indicators.ema(period=5, column_name=col)
+        val = round(self.df[col].tolist()[-1], 5)
+        del self.df[col]
+        self.assertEqual(1.10164, val)
 
 

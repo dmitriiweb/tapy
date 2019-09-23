@@ -27,5 +27,6 @@ pip install -U tapy
 ## Available Indicators
 
 1. SMA (Simple Moving Average)
+2. Exponential Moving Average (EMA)
 
 
