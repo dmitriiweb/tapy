@@ -30,7 +30,5 @@ Indicators
 .. autoclass:: tapy.Indicators
 .. automodule:: __init__
 
-SMA (Simple Moving Average)
----------------------------
 .. automodule:: tapy.Indicators.sma
 

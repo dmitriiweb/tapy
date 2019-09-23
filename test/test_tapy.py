@@ -11,13 +11,14 @@ class TestIndicators(unittest.TestCase):
     """
 
     def setUp(self):
-        df = pd.read_csv('EURUSD60.csv')
-        self.indicators = Indicators(df)
+        self.df = pd.read_csv('EURUSD60.csv')
+        self.indicators = Indicators(self.df)
 
     def test_sma(self):
-        self.indicators.sma()
-        df_sma = self.indicators.df
-        val = round(df_sma['sma'].tolist()[-1], 5)
+        col = 'sma'
+        self.indicators.sma(column_name=col)
+        val = round(self.df[col].tolist()[-1], 5)
+        del self.df[col]
         expected_values = 1.10151
         self.assertEqual(expected_values, val)
 

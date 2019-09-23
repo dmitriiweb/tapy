@@ -14,8 +14,9 @@ pip install -U tapy
 >>> from tapy import Indicators
 >>> df = pd.read_csv('EURUSD60.csv')
 >>> indicators = Indicators(df)
->>> indicators.sma(period=3, column_name='SMA')
-Date         Time     Open     High      Low    Close  Volume       SMA
+>>> indicators.sma(period=3, column_name='SMA_3')
+>>> df.tail()
+      Date   Time     Open     High      Low    Close  Volume     SMA_3
 2019.09.20  16:00  1.10022  1.10105  1.10010  1.10070    2888  1.100667
 2019.09.20  17:00  1.10068  1.10193  1.10054  1.10184    6116  1.100920
 2019.09.20  18:00  1.10186  1.10194  1.10095  1.10144    3757  1.101327
