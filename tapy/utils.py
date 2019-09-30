@@ -26,22 +26,14 @@ def calculate_ao(df, column_name):
 
 def calculate_smma(df, period, column_name, apply_to):
     """Calculate Smoothed Moving Average"""
-    # TODO Need improve
-    prices = df[apply_to].tolist()
-    smma_vals = []
-
-    # First value for SMMA
-    first_val = df[apply_to].iloc[:period].mean()
-    smma_vals.append(first_val)
-
-    # Calculate SMMA
-    for i in range(1, len(prices), 1):
-        try:
-            smma_val = (smma_vals[i-1] * (period-1) + prices[i+period]) / period
-            smma_vals.append(smma_val)
-        except IndexError:
-            break
-
-    df = pd.DataFrame(smma_vals, columns=[column_name])
-    return df
-
+    df_tmp = df[[apply_to]]
+    first_val = df_tmp[apply_to].iloc[:period].mean()
+    df_tmp[column_name] = None
+    df_tmp.at[period, column_name] = first_val
+    for index, row in df_tmp.iterrows():
+        if index > period:
+            smma_val = (df_tmp.at[index-1, column_name] *
+                        (period-1) + row[apply_to]) / period
+            df_tmp.at[index, column_name] = smma_val
+    df_tmp = df_tmp[[column_name]]
+    return df_tmp
