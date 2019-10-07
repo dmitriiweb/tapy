@@ -42,6 +42,7 @@ Available Indicators
 3. Alligator
 4. Average True Range (ATR)
 5. Awesome Oscillator (AO)
-6. Exponential Moving Average (EMA)
-7. Simple Moving Average (SMA)
-8. Smoothed Moving Average (SMMA)
+6. Bears Power
+7. Exponential Moving Average (EMA)
+8. Simple Moving Average (SMA)
+9. Smoothed Moving Average (SMMA)

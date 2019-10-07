@@ -77,6 +77,13 @@ class TestIndicators(unittest.TestCase):
         val_atr = get_val(df, col, -1, 4)
         self.assertEqual(0.0013, val_atr)
 
+    def test_bears_power(self):
+        col = 'bears'
+        self.indicators.bears_power(column_name=col)
+        df = self.indicators.df
+        val_bears = get_val(df, col, -1, 5)
+        self.assertEqual(0.00083, val_bears)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

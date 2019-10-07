@@ -35,6 +35,7 @@ Indicators
 .. automodule:: tapy.Indicators.alligator
 .. automodule:: tapy.Indicators.atr
 .. automodule:: tapy.Indicators.awesome_oscillator
+.. automodule:: tapy.Indicators.bears_power
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma

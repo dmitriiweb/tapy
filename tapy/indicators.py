@@ -259,3 +259,21 @@ class Indicators:
         calculate_sma(df_tmp, period, column_name, 'max_val')
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def bears_power(self, period=13, column_name='bears_power'):
+        """
+        Bears Power
+        ------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bears_power
+
+            >>> indicators.bears_power(period=13, column_name='bears_power')
+
+            :param int period: Period, default: 13
+            :param str column_name: Column name, default: bears_power
+            :return: None
+        """
+        df_tmp = self.df[[self.columns['Close'], self.columns['Low']]]
+        df_tmp['ema'] = df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean()
+        df_tmp[column_name] = df_tmp['ema'] - df_tmp[self.columns['Low']]
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
