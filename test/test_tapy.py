@@ -14,7 +14,6 @@ class TestIndicators(unittest.TestCase):
         self.df = pd.read_csv('EURUSD60.csv')
         self.indicators = Indicators(self.df)
 
-
     def test_sma(self):
         col = 'sma'
         self.indicators.sma(period=5, column_name=col)
@@ -56,6 +55,27 @@ class TestIndicators(unittest.TestCase):
         df = self.indicators.df
         val = get_val(df, col, -1, 5)
         self.assertEqual(1.10192, val)
+
+    def test_alligator(self):
+        col_jaws = 'jaws'
+        col_teeth = 'teeth'
+        col_lips = 'lips'
+        self.indicators.alligator(column_name_jaws=col_jaws,
+                                  column_name_teeth=col_teeth, column_name_lips=col_lips)
+        df = self.indicators.df
+        val_jaws = get_val(df, col_jaws, -1, 5)
+        val_teeth = get_val(df, col_teeth, -1, 5)
+        val_lips = get_val(df, col_lips, -1, 5)
+        self.assertEqual(1.10478, val_jaws)
+        self.assertEqual(1.10352, val_teeth)
+        self.assertEqual(1.10214, val_lips)
+
+    def test_atr(self):
+        col = 'atr'
+        self.indicators.atr(column_name=col)
+        df = self.indicators.df
+        val_atr = get_val(df, col, -1, 4)
+        self.assertEqual(0.0013, val_atr)
 
 
 def get_val(df, column, val_index, round_to):

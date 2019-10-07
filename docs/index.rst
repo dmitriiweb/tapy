@@ -32,8 +32,9 @@ Indicators
 
 .. automodule:: tapy.Indicators.accelerator_oscillator
 .. automodule:: tapy.Indicators.accumulation_distribution
+.. automodule:: tapy.Indicators.alligator
+.. automodule:: tapy.Indicators.atr
 .. automodule:: tapy.Indicators.awesome_oscillator
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma
-

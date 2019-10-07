@@ -110,7 +110,8 @@ class Indicators:
             :return: None
 
         """
-        self.df[column_name] = self.df[self.columns[apply_to]].ewm(span=period, adjust=False).mean()
+        self.df[column_name] = self.df[self.columns[apply_to]].ewm(
+            span=period, adjust=False).mean()
 
     def awesome_oscillator(self, column_name='ao'):
         """
@@ -188,5 +189,73 @@ class Indicators:
                          ) * df_tmp['volume'] / (df_tmp['high'] - df_tmp['low'])
 
         df_tmp[column_name] = df_tmp['calc'].explode().sum()
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def alligator(self,
+                  period_jaws=13,
+                  period_teeth=8,
+                  period_lips=5,
+                  shift_jaws=8,
+                  shift_teeth=5,
+                  shift_lips=3,
+                  column_name_jaws='alligator_jaws',
+                  column_name_teeth='alligator_teeth',
+                  column_name_lips='alligator_lips'):
+        """
+        Alligator
+        ------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/alligator
+
+            >>> indicators.alligator(period_jaws=13, period_teeth=8, period_lips=5, shift_jaws=8, shift_teeth=5, shift_lips=3, column_name_jaws='alligator_jaw', column_name_teeth='alligator_teeth', column_name_lips='alligator_lips')
+
+            :param int period_jaws: Period for Alligator' Jaws, default: 13
+            :param int period_teeth: Period for Alligator' Teeth, default: 8
+            :param int period_lips: Period for Alligator' Lips, default: 5
+            :param int shift_jaws: Period for Alligator' Jaws, default: 8
+            :param int shift_teeth: Period for Alligator' Teeth, default: 5
+            :param int shift_lips: Period for Alligator' Lips, default: 3
+            :param str column_name_jaws: Column Name for Alligator' Jaws, default: alligator_jaws
+            :param str column_name_teeth: Column Name for Alligator' Teeth, default: alligator_teeth
+            :param str column_name_lips: Column Name for Alligator' Lips, default: alligator_lips
+            :return: None
+        """
+        print(self.df.shape)
+        df_median = self.df[[self.columns['High'], self.columns['Low']]]
+        median_col = 'median_price'
+        df_median[median_col] = (df_median[self.columns['High']] +
+                                 df_median[self.columns['Low']]) / 2
+        df_j = calculate_smma(df_median, period_jaws, column_name_jaws, median_col)
+        df_t = calculate_smma(df_median, period_teeth, column_name_teeth, median_col)
+        df_l = calculate_smma(df_median, period_lips, column_name_lips, median_col)
+
+        # Shift SMMAs
+        df_j[column_name_jaws] = df_j[column_name_jaws].shift(shift_jaws)
+        df_t[column_name_teeth] = df_t[column_name_teeth].shift(shift_teeth)
+        df_l[column_name_lips] = df_l[column_name_lips].shift(shift_lips)
+
+        self.df = self.df.merge(df_j, left_index=True, right_index=True)
+        self.df = self.df.merge(df_t, left_index=True, right_index=True)
+        self.df = self.df.merge(df_l, left_index=True, right_index=True)
+
+    def atr(self, period=14, column_name='atr'):
+        """
+        Average True Range (ATR)
+        ------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/average_true_range
+
+            >>> indicators.atr(period=14, column_name='atr')
+
+            :param int period: Period, default: 14
+            :param str column_name: Column name, default: atr
+            :return: None
+        """
+        df_tmp = self.df[[self.columns['High'], self.columns['Low'], self.columns['Close']]]
+        df_tmp['max-min'] = df_tmp[self.columns['High']] - df_tmp[self.columns['Low']]
+        df_tmp['prev_close-high'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['High']]
+        df_tmp['prev_close-min'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['Low']]
+        df_tmp['max_val'] = df_tmp.apply(lambda x: max([x['max-min'], x['prev_close-high'], x['prev_close-min']]),
+                                         axis=1)
+        calculate_sma(df_tmp, period, column_name, 'max_val')
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

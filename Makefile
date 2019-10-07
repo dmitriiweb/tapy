@@ -68,6 +68,6 @@ pypi-release:
 release:
 	make dist
 	git tag -s $(version)
-	git push
+	git push origin $(version)
 	make pypi-release
 
