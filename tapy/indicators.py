@@ -2,7 +2,7 @@ import pandas as pd
 
 from .utils import calculate_ao, calculate_sma, calculate_smma
 
-__version__ = '1.1.1'
+__version__ = '1.2.1'
 
 
 class Indicators:
