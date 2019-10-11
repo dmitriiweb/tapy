@@ -2,7 +2,7 @@ import pandas as pd
 
 from .utils import calculate_ao, calculate_sma, calculate_smma
 
-__version__ = '1.2.1'
+__version__ = '1.2.2'
 
 
 class Indicators:
@@ -222,9 +222,10 @@ class Indicators:
         """
         print(self.df.shape)
         df_median = self.df[[self.columns['High'], self.columns['Low']]]
-        median_col = 'median_price'
-        df_median[median_col] = (df_median[self.columns['High']] +
-                                 df_median[self.columns['Low']]) / 2
+        median_col = 'median_col'
+        df_median = df_median.assign(
+            median_col=lambda x: (x[self.columns['High']] + x[self.columns['Low']]) / 2
+        )
         df_j = calculate_smma(df_median, period_jaws, column_name_jaws, median_col)
         df_t = calculate_smma(df_median, period_teeth, column_name_teeth, median_col)
         df_l = calculate_smma(df_median, period_lips, column_name_lips, median_col)
@@ -251,10 +252,10 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[[self.columns['High'], self.columns['Low'], self.columns['Close']]]
-        df_tmp['max-min'] = df_tmp[self.columns['High']] - df_tmp[self.columns['Low']]
+        df_tmp = df_tmp.assign(max_min=df_tmp[self.columns['High']] - df_tmp[self.columns['Low']])
         df_tmp['prev_close-high'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['High']]
         df_tmp['prev_close-min'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['Low']]
-        df_tmp['max_val'] = df_tmp.apply(lambda x: max([x['max-min'], x['prev_close-high'], x['prev_close-min']]),
+        df_tmp['max_val'] = df_tmp.apply(lambda x: max([x['max_min'], x['prev_close-high'], x['prev_close-min']]),
                                          axis=1)
         calculate_sma(df_tmp, period, column_name, 'max_val')
         df_tmp = df_tmp[[column_name]]
@@ -273,7 +274,8 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[[self.columns['Close'], self.columns['Low']]]
-        df_tmp['ema'] = df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean()
+        # df_tmp['ema'] = df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean()
+        df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
         df_tmp[column_name] = df_tmp['ema'] - df_tmp[self.columns['Low']]
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

@@ -28,7 +28,7 @@ def calculate_smma(df, period, column_name, apply_to):
     """Calculate Smoothed Moving Average"""
     df_tmp = df[[apply_to]]
     first_val = df_tmp[apply_to].iloc[:period].mean()
-    df_tmp[column_name] = None
+    df_tmp = df_tmp.assign(column_name=None)
     df_tmp.at[period, column_name] = first_val
     for index, row in df_tmp.iterrows():
         if index > period:
