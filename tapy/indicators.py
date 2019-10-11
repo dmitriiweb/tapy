@@ -220,7 +220,6 @@ class Indicators:
             :param str column_name_lips: Column Name for Alligator' Lips, default: alligator_lips
             :return: None
         """
-        print(self.df.shape)
         df_median = self.df[[self.columns['High'], self.columns['Low']]]
         median_col = 'median_col'
         df_median = df_median.assign(
@@ -274,8 +273,33 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[[self.columns['Close'], self.columns['Low']]]
-        # df_tmp['ema'] = df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean()
         df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
         df_tmp[column_name] = df_tmp['ema'] - df_tmp[self.columns['Low']]
         df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def bollinger_bands(self, period=20, deviation=2, column_name_top='bollinger_top',
+                        column_name_mid='bollinger_mid', column_name_bottom='bollinger_bottom'):
+        """
+        Bollinger Bands
+        ---------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bollinger_bands
+
+            >>> indicators.bollinger_bands(self, period=20, deviation=2, column_name_top='bollinger_up', column_name_mid='bollinger_mid', column_name_bottom='bollinger_bottom')
+
+            :param int period: Period, default 20
+            :param int deviation: Number of Standard Deviations, default 2
+            :param str column_name_top: default bollinger_up
+            :param str column_name_mid: default bollinger_mid
+            :param str column_name_bottom: default bollinger_down
+            :return: None
+        """
+        df_tmp = self.df[[self.columns['Close']]]
+        df_tmp = df_tmp.assign(mid=df_tmp[self.columns['Close']].rolling(window=period).mean())
+        df_tmp = df_tmp.assign(stdev=df_tmp[self.columns['Close']].rolling(window=period).std(ddof=0))
+        df_tmp = df_tmp.assign(tl=df_tmp.mid + deviation * df_tmp.stdev)
+        df_tmp = df_tmp.assign(bl=df_tmp.mid - deviation * df_tmp.stdev)
+
+        df_tmp = df_tmp[['mid', 'tl', 'bl']]
+        df_tmp = df_tmp.rename(columns={'mid': column_name_mid, 'tl': column_name_top, 'bl': column_name_bottom})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

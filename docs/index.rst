@@ -36,6 +36,7 @@ Indicators
 .. automodule:: tapy.Indicators.atr
 .. automodule:: tapy.Indicators.awesome_oscillator
 .. automodule:: tapy.Indicators.bears_power
+.. automodule:: tapy.Indicators.bollinger_bands
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma

@@ -84,6 +84,19 @@ class TestIndicators(unittest.TestCase):
         val_bears = get_val(df, col, -1, 5)
         self.assertEqual(0.00083, val_bears)
 
+    def test_bollinger_bands(self):
+        col_up = 'bollinger_up'
+        col_mid = 'bollinger_mid'
+        col_down = 'bollinger_down'
+        self.indicators.bollinger_bands(column_name_top=col_up, column_name_mid=col_mid, column_name_bottom=col_down)
+        df = self.indicators.df
+        val_up = get_val(df, col_up, -1, 5)
+        val_mid = get_val(df, col_mid, -1, 5)
+        val_down = get_val(df, col_down, -1, 5)
+        self.assertEqual(1.10733, val_up)
+        self.assertEqual(1.10346, val_mid)
+        self.assertEqual(1.09959, val_down)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)
