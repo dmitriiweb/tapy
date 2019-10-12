@@ -97,6 +97,13 @@ class TestIndicators(unittest.TestCase):
         self.assertEqual(1.10346, val_mid)
         self.assertEqual(1.09959, val_down)
 
+    def test_bulls_power(self):
+        col = 'bulls'
+        self.indicators.bulls_power(column_name=col)
+        df = self.indicators.df
+        val_bulls = get_val(df, col, -1, 5)
+        self.assertEqual(-0.00015, val_bulls)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

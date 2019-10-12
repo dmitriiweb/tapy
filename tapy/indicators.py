@@ -303,3 +303,21 @@ class Indicators:
         df_tmp = df_tmp[['mid', 'tl', 'bl']]
         df_tmp = df_tmp.rename(columns={'mid': column_name_mid, 'tl': column_name_top, 'bl': column_name_bottom})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def bulls_power(self, period=13, column_name='bulls_power'):
+        """
+        Bears Power
+        ------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power
+
+            >>> indicators.bulls_power(period=13, column_name='bulls_power')
+
+            :param int period: Period, default: 13
+            :param str column_name: Column name, default: bulls_power
+            :return: None
+        """
+        df_tmp = self.df[[self.columns['Close'], self.columns['High']]]
+        df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
+        df_tmp[column_name] = df_tmp[self.columns['High']] - df_tmp['ema']
+        df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

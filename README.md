@@ -35,6 +35,7 @@ pip install -U tapy
 5. Awesome Oscillator (AO)
 6. Bears Power
 7. Bollinger Bands
-8. Exponential Moving Average (EMA)
-9. Simple Moving Average (SMA)
-10. Smoothed Moving Average (SMMA)
+8. Bulls Power
+9. Exponential Moving Average (EMA)
+10. Simple Moving Average (SMA)
+11. Smoothed Moving Average (SMMA)
