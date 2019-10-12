@@ -1,8 +1,8 @@
 import pandas as pd
 
-from .utils import calculate_ao, calculate_sma, calculate_smma
+from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
-__version__ = '1.2.2'
+__version__ = '1.3.2'
 
 
 class Indicators:
@@ -306,7 +306,7 @@ class Indicators:
 
     def bulls_power(self, period=13, column_name='bulls_power'):
         """
-        Bears Power
+        Bulls Power
         ------------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power
 
@@ -320,4 +320,30 @@ class Indicators:
         df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
         df_tmp[column_name] = df_tmp[self.columns['High']] - df_tmp['ema']
         df_tmp = df_tmp[[column_name]]
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def cci(self, period=14, column_name='cci'):
+        """
+        Commodity Channel Index (CCI)
+        -----------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/commodity_channel_index
+
+            >>> indicators.cci(period=14, column_name='cci')
+
+            :param int period: Period, default: 14
+            :param str column_name: Column name, default: cci
+            :return: None
+        """
+        pd.set_option('display.max_columns', 500)
+        df_tmp = self.df[[self.columns['High'], self.columns['Low'], self.columns['Close']]]
+        df_tmp = df_tmp.assign(tp=(df_tmp[self.columns['High']]
+                                   + df_tmp[self.columns['Low']]
+                                   + df_tmp[self.columns['Close']]) / 3)
+
+        df_tmp = df_tmp.assign(tp_sma=df_tmp.tp.rolling(window=period).mean())
+        df_tmp = df_tmp.assign(tp_mad=df_tmp.tp.rolling(window=period).apply(mad, raw=False))
+        df_tmp = df_tmp.assign(tp_min_sma=df_tmp.tp - df_tmp.tp_sma)
+        df_tmp = df_tmp.assign(cci=(1 / 0.015) * (df_tmp.tp_min_sma / df_tmp.tp_mad))
+        df_tmp = df_tmp[['cci']]
+        df_tmp = df_tmp.rename(columns={'cci': column_name})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

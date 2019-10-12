@@ -45,7 +45,8 @@ Available Indicators
 6. Bears Power
 7. Bollinger Bands
 8. Bulls Power
-9. Exponential Moving Average (EMA)
-10. Simple Moving Average (SMA)
-11. Smoothed Moving Average (SMMA)
+9. Commodity Channel Index (CCI)
+10. Exponential Moving Average (EMA)
+11. Simple Moving Average (SMA)
+12. Smoothed Moving Average (SMMA)
 

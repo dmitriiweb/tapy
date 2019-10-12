@@ -1,4 +1,5 @@
 import pandas as pd
+from numpy import mean, absolute
 
 
 def calculate_sma(df, period, column_name, apply_to):
@@ -32,8 +33,13 @@ def calculate_smma(df, period, column_name, apply_to):
     df_tmp.at[period, column_name] = first_val
     for index, row in df_tmp.iterrows():
         if index > period:
-            smma_val = (df_tmp.at[index-1, column_name] *
-                        (period-1) + row[apply_to]) / period
+            smma_val = (df_tmp.at[index - 1, column_name] *
+                        (period - 1) + row[apply_to]) / period
             df_tmp.at[index, column_name] = smma_val
     df_tmp = df_tmp[[column_name]]
     return df_tmp
+
+
+def mad(data, axis=None):
+    """Calculate Average absolute deviation"""
+    return mean(absolute(data - mean(data, axis)), axis)
