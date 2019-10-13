@@ -111,6 +111,13 @@ class TestIndicators(unittest.TestCase):
         val_cci = get_val(df, col, -1, 4)
         self.assertEqual(-38.4801, val_cci)
 
+    def test_de_marker(self, period=14, column_name='dem'):
+        col = 'dem'
+        self.indicators.de_marker(column_name=col)
+        df = self.indicators.df
+        val_dem = get_val(df, col, -1, 4)
+        self.assertEqual(0.1967, val_dem)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

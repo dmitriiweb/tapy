@@ -39,6 +39,7 @@ Indicators
 .. automodule:: tapy.Indicators.bollinger_bands
 .. automodule:: tapy.Indicators.bulls_power
 .. automodule:: tapy.Indicators.cci
+.. automodule:: tapy.Indicators.de_marker
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma

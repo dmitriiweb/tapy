@@ -37,6 +37,7 @@ pip install -U tapy
 7. Bollinger Bands
 8. Bulls Power
 9. Commodity Channel Index (CCI)
-10. Exponential Moving Average (EMA)
-11. Simple Moving Average (SMA)
-12. Smoothed Moving Average (SMMA)
+10. DeMarker (DeM)
+11. Exponential Moving Average (EMA)
+12. Simple Moving Average (SMA)
+13. Smoothed Moving Average (SMMA)
