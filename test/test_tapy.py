@@ -118,6 +118,28 @@ class TestIndicators(unittest.TestCase):
         val_dem = get_val(df, col, -1, 4)
         self.assertEqual(0.1967, val_dem)
 
+    def test_force_index_error(self):
+        col = 'frc'
+        with self.assertRaises(Exception) as context:
+            self.indicators.force_index(column_name=col, method='blah')
+        self.assertTrue('The "method" can be only "sma", "ema" or "smma"')
+
+    def test_force_index(self):
+        col_sma = 'frc_sma'
+        col_ema = 'ema'
+        col_smma = 'smma'
+        self.indicators.force_index(column_name=col_sma)
+        self.indicators.force_index(column_name=col_ema, method='ema')
+        self.indicators.force_index(column_name=col_smma, method='smma')
+        self.indicators.force_index()
+        df = self.indicators.df
+        val_frc_sma = get_val(df, col_sma, -1, 4)
+        val_frc_ema = get_val(df, col_ema, -1, 4)
+        val_frc_smma = get_val(df, col_smma, -1, 4)
+        self.assertEqual(-0.3154, val_frc_sma)
+        self.assertEqual(-0.1294, val_frc_ema)
+        self.assertEqual(-0.1495, val_frc_smma)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

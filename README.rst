@@ -48,6 +48,7 @@ Available Indicators
 9. Commodity Channel Index (CCI)
 10. DeMarker (DeM)
 11. Exponential Moving Average (EMA)
-12. Simple Moving Average (SMA)
-13. Smoothed Moving Average (SMMA)
+12. Force Index (FRC)
+13. Simple Moving Average (SMA)
+14. Smoothed Moving Average (SMMA)
 

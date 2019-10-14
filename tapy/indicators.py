@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 
-from .utils import calculate_ao, calculate_sma, calculate_smma, mad
+from .utils import calculate_ao, calculate_sma, calculate_smma, mad, WrongMAMethod
 
-__version__ = '1.4.0'
+__version__ = '1.5.0'
 
 
 class Indicators:
@@ -380,4 +380,34 @@ class Indicators:
         df_tmp = df_tmp.rename(columns={'dem': column_name})
 
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def force_index(self, period=13, method='sma', apply_to='Close', column_name='frc'):
+        """
+        Force Index (FRC)
+        ------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/force_index
+
+            >>> indicators.force_index(period=13, method='sma', apply_to='Close', column_name='frc')
+
+            :param int period: Period, default: 13
+            :param str method: Moving average method. Can be 'sma', 'smma' or 'ema'. Default: sma
+            :param str apply_to: Apply indicator to column, default: Close
+            :param str column_name: Column name, default: frc
+            :return: None
+        """
+        df_tmp = self.df[[apply_to, self.columns['Volume']]]
+        if method == 'sma':
+            df_tmp = df_tmp.assign(ma=df_tmp[apply_to].rolling(window=period).mean())
+        elif method == 'smma':
+            df_tmp_smma = calculate_smma(df_tmp, period, 'ma', apply_to)
+            df_tmp = df_tmp.merge(df_tmp_smma, left_index=True, right_index=True)
+        elif method == 'ema':
+            df_tmp = df_tmp.assign(ma=df_tmp[apply_to].ewm(span=period, adjust=False).mean())
+        else:
+            raise WrongMAMethod('The "method" can be only "sma", "ema" or "smma"')
+        df_tmp = df_tmp.assign(frc=(df_tmp.ma - df_tmp.ma.shift(1)) * df_tmp[self.columns['Volume']])
+        df_tmp = df_tmp[['frc']]
+        df_tmp = df_tmp.rename(columns={'frc': column_name})
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
 
