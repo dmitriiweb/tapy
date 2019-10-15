@@ -140,6 +140,17 @@ class TestIndicators(unittest.TestCase):
         self.assertEqual(-0.1294, val_frc_ema)
         self.assertEqual(-0.1495, val_frc_smma)
 
+    def test_fractals(self):
+        col_high = 'fh'
+        col_low = 'fl'
+        self.indicators.fractals(column_name_high=col_high, column_name_low=col_low)
+        df = self.indicators.df
+        fractal_low = df.iloc[-6][col_low]
+        fractal_high = df.iloc[-14][col_high]
+        self.assertTrue(fractal_low)
+        self.assertTrue(fractal_high)
+        self.assertFalse(df.iloc[-5][col_low])
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

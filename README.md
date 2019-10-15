@@ -40,5 +40,6 @@ pip install -U tapy
 10. DeMarker (DeM)
 11. Exponential Moving Average (EMA)
 12. Force Index (FRC)
-13. Simple Moving Average (SMA)
-14. Smoothed Moving Average (SMMA)
+13. Fractals
+14. Simple Moving Average (SMA)
+15. Smoothed Moving Average (SMMA)

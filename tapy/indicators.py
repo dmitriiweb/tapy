@@ -363,7 +363,8 @@ class Indicators:
         """
         df_tmp = self.df[[self._columns['High'], self._columns['Low']]]
 
-        df_tmp = df_tmp.assign(hdif=(df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(1)).astype(int))
+        df_tmp = df_tmp.assign(
+            hdif=(df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(1)).astype(int))
         df_tmp = df_tmp.assign(hsub=df_tmp[self._columns['High']] - df_tmp[self._columns['High']].shift(1))
         df_tmp = df_tmp.assign(demax=np.where(df_tmp.hdif == 0, 0, df_tmp.hsub))
 
@@ -374,7 +375,7 @@ class Indicators:
         df_tmp['sma_demax'] = df_tmp['demax'].rolling(window=period).mean()
         df_tmp['sma_demin'] = df_tmp['demin'].rolling(window=period).mean()
 
-        df_tmp = df_tmp.assign(dem=df_tmp.sma_demax/(df_tmp.sma_demax + df_tmp.sma_demin))
+        df_tmp = df_tmp.assign(dem=df_tmp.sma_demax / (df_tmp.sma_demax + df_tmp.sma_demin))
 
         df_tmp = df_tmp[['dem']]
         df_tmp = df_tmp.rename(columns={'dem': column_name})
@@ -410,4 +411,35 @@ class Indicators:
         df_tmp = df_tmp.rename(columns={'frc': column_name})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
+    def fractals(self, column_name_high='fractals_high', column_name_low='fractals_low'):
+        """
+        Fractals
+        ---------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/fractals
 
+            >>> Indicators.fractals(column_name_high='fractals_high', column_name_low='fractals_low')
+
+            If fractals are high than 1, if fractals are low than -1, else 0
+
+            :param str column_name_high: Column name for High values, default: fractals_high
+            :param str column_name_low: Column name for Low values, default: fractals_low
+            :return: None
+        """
+        df_tmp = self.df[[self._columns['High'], self._columns['Low']]]
+        df_tmp = df_tmp.assign(fh=np.where(
+            (df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(1)) &
+            (df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(2)) &
+            (df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(-1)) &
+            (df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(-2)),
+            True, False
+        ))
+        df_tmp = df_tmp.assign(fl=np.where(
+            (df_tmp[self._columns['Low']] < df_tmp[self._columns['Low']].shift(1)) &
+            (df_tmp[self._columns['Low']] < df_tmp[self._columns['Low']].shift(2)) &
+            (df_tmp[self._columns['Low']] < df_tmp[self._columns['Low']].shift(-1)) &
+            (df_tmp[self._columns['Low']] < df_tmp[self._columns['Low']].shift(-2)),
+            True, False
+        ))
+        df_tmp = df_tmp[['fh', 'fl']]
+        df_tmp = df_tmp.rename(columns={'fh': column_name_high, 'fl': column_name_low})
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

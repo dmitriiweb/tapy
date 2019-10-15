@@ -42,5 +42,6 @@ Indicators
 .. automodule:: tapy.Indicators.de_marker
 .. automodule:: tapy.Indicators.ema
 .. automodule:: tapy.Indicators.force_index
+.. automodule:: tapy.Indicators.fractals
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma
