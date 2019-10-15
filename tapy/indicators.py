@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-from .utils import calculate_ao, calculate_sma, calculate_smma, mad, WrongMAMethod
+from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
 __version__ = '1.6.0'
 
@@ -405,7 +405,7 @@ class Indicators:
         elif method == 'ema':
             df_tmp = df_tmp.assign(ma=df_tmp[apply_to].ewm(span=period, adjust=False).mean())
         else:
-            raise WrongMAMethod('The "method" can be only "sma", "ema" or "smma"')
+            raise ValueError('The "method" can be only "sma", "ema" or "smma"')
         df_tmp = df_tmp.assign(frc=(df_tmp.ma - df_tmp.ma.shift(1)) * df_tmp[self._columns['Volume']])
         df_tmp = df_tmp[['frc']]
         df_tmp = df_tmp.rename(columns={'frc': column_name})

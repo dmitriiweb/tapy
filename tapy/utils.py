@@ -2,10 +2,6 @@ import pandas as pd
 from numpy import mean, absolute
 
 
-class WrongMAMethod(Exception):
-    pass
-
-
 def calculate_sma(df, period, column_name, apply_to):
     """Calculate Simple Moving Averaga"""
     df[column_name] = df[apply_to].rolling(window=period).mean()
