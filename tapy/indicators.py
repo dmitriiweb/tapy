@@ -3,7 +3,7 @@ import numpy as np
 
 from .utils import calculate_ao, calculate_sma, calculate_smma, mad, WrongMAMethod
 
-__version__ = '1.5.0'
+__version__ = '1.6.0'
 
 
 class Indicators:
@@ -49,7 +49,7 @@ class Indicators:
             and require only if indicator use this data.
         """
         self.df = df
-        self.columns = {
+        self._columns = {
             'Open': open_col,
             'High': high_col,
             'Low': low_col,
@@ -63,7 +63,7 @@ class Indicators:
         ---------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#simple_moving_average
 
-            >>> indicators.sma(period=5, column_name='sma', apply_to='Close')
+            >>> Indicators.sma(period=5, column_name='sma', apply_to='Close')
 
             :param int period: the number of calculation periods, default: 5
             :param str column_name: Column name, default: sma
@@ -81,7 +81,7 @@ class Indicators:
         ---------------------
             https://www.metatrader4.com/ru/trading-platform/help/analytics/tech_indicators/moving_average#smoothed_moving_average
 
-            >>> indicators.smma(period=5, column_name='smma', apply_to='Close')
+            >>> Indicators.smma(period=5, column_name='smma', apply_to='Close')
 
             :param int period: the number of calculation periods, default: 5
             :param str column_name: Column name, default: smma
@@ -101,7 +101,7 @@ class Indicators:
 
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/moving_average#exponential_moving_average
 
-            >>> indicators.ema(period=5, column_name='ema', apply_to='Close')
+            >>> Indicators.ema(period=5, column_name='ema', apply_to='Close')
 
             :param int period: the number of calculation periods, default: 5
             :param str column_name: Column name, default: ema
@@ -111,7 +111,7 @@ class Indicators:
             :return: None
 
         """
-        self.df[column_name] = self.df[self.columns[apply_to]].ewm(
+        self.df[column_name] = self.df[self._columns[apply_to]].ewm(
             span=period, adjust=False).mean()
 
     def awesome_oscillator(self, column_name='ao'):
@@ -121,15 +121,15 @@ class Indicators:
 
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/awesome_oscillator
 
-            >>> indicators.awesome_oscillator(column_name='ao')
+            >>> Indicators.awesome_oscillator(column_name='ao')
 
             :param str column_name: Column name, default: ao
             :return: None
         """
         # Data frame for storing temporary data
         df_tmp = pd.DataFrame()
-        df_tmp['High'] = self.df[self.columns['High']]
-        df_tmp['Low'] = self.df[self.columns['Low']]
+        df_tmp['High'] = self.df[self._columns['High']]
+        df_tmp['Low'] = self.df[self._columns['Low']]
 
         # Calculate Awesome Oscillator
         calculate_ao(df_tmp, column_name)
@@ -143,7 +143,7 @@ class Indicators:
 
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/accelerator_decelerator
 
-            >>> indicators.accelerator_oscillator(column_name='ac')
+            >>> Indicators.accelerator_oscillator(column_name='ac')
 
             :param str column_name: Column name, default: ac
             :return: None
@@ -151,8 +151,8 @@ class Indicators:
         pass
         # Data frame for storing temporary data
         df_tmp = pd.DataFrame()
-        df_tmp['High'] = self.df[self.columns['High']]
-        df_tmp['Low'] = self.df[self.columns['Low']]
+        df_tmp['High'] = self.df[self._columns['High']]
+        df_tmp['Low'] = self.df[self._columns['Low']]
 
         # Calculate Awesome Oscillator
         calculate_ao(df_tmp, 'ao')
@@ -172,7 +172,7 @@ class Indicators:
 
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/accumulation_distribution
 
-            >>> indicators.accumulation_distribution(column_name='a/d')
+            >>> Indicators.accumulation_distribution(column_name='a/d')
 
             :param str column_name: Column name, default: a/d
             :return: None
@@ -180,10 +180,10 @@ class Indicators:
         """
         # Temporary df
         df_tmp = pd.DataFrame()
-        df_tmp['close'] = self.df[self.columns['Close']]
-        df_tmp['high'] = self.df[self.columns['High']]
-        df_tmp['low'] = self.df[self.columns['Low']]
-        df_tmp['volume'] = self.df[self.columns['Volume']]
+        df_tmp['close'] = self.df[self._columns['Close']]
+        df_tmp['high'] = self.df[self._columns['High']]
+        df_tmp['low'] = self.df[self._columns['Low']]
+        df_tmp['volume'] = self.df[self._columns['Volume']]
 
         df_tmp['calc'] = (
                                  (df_tmp['close'] - df_tmp['low']) - (df_tmp['high'] - df_tmp['close'])
@@ -208,7 +208,7 @@ class Indicators:
         ------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/alligator
 
-            >>> indicators.alligator(period_jaws=13, period_teeth=8, period_lips=5, shift_jaws=8, shift_teeth=5, shift_lips=3, column_name_jaws='alligator_jaw', column_name_teeth='alligator_teeth', column_name_lips='alligator_lips')
+            >>> Indicators.alligator(period_jaws=13, period_teeth=8, period_lips=5, shift_jaws=8, shift_teeth=5, shift_lips=3, column_name_jaws='alligator_jaw', column_name_teeth='alligator_teeth', column_name_lips='alligator_lips')
 
             :param int period_jaws: Period for Alligator' Jaws, default: 13
             :param int period_teeth: Period for Alligator' Teeth, default: 8
@@ -221,10 +221,10 @@ class Indicators:
             :param str column_name_lips: Column Name for Alligator' Lips, default: alligator_lips
             :return: None
         """
-        df_median = self.df[[self.columns['High'], self.columns['Low']]]
+        df_median = self.df[[self._columns['High'], self._columns['Low']]]
         median_col = 'median_col'
         df_median = df_median.assign(
-            median_col=lambda x: (x[self.columns['High']] + x[self.columns['Low']]) / 2
+            median_col=lambda x: (x[self._columns['High']] + x[self._columns['Low']]) / 2
         )
         df_j = calculate_smma(df_median, period_jaws, column_name_jaws, median_col)
         df_t = calculate_smma(df_median, period_teeth, column_name_teeth, median_col)
@@ -245,16 +245,16 @@ class Indicators:
         ------------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/average_true_range
 
-            >>> indicators.atr(period=14, column_name='atr')
+            >>> Indicators.atr(period=14, column_name='atr')
 
             :param int period: Period, default: 14
             :param str column_name: Column name, default: atr
             :return: None
         """
-        df_tmp = self.df[[self.columns['High'], self.columns['Low'], self.columns['Close']]]
-        df_tmp = df_tmp.assign(max_min=df_tmp[self.columns['High']] - df_tmp[self.columns['Low']])
-        df_tmp['prev_close-high'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['High']]
-        df_tmp['prev_close-min'] = df_tmp[self.columns['Close']].shift(1) - df_tmp[self.columns['Low']]
+        df_tmp = self.df[[self._columns['High'], self._columns['Low'], self._columns['Close']]]
+        df_tmp = df_tmp.assign(max_min=df_tmp[self._columns['High']] - df_tmp[self._columns['Low']])
+        df_tmp['prev_close-high'] = df_tmp[self._columns['Close']].shift(1) - df_tmp[self._columns['High']]
+        df_tmp['prev_close-min'] = df_tmp[self._columns['Close']].shift(1) - df_tmp[self._columns['Low']]
         df_tmp['max_val'] = df_tmp.apply(lambda x: max([x['max_min'], x['prev_close-high'], x['prev_close-min']]),
                                          axis=1)
         calculate_sma(df_tmp, period, column_name, 'max_val')
@@ -267,15 +267,15 @@ class Indicators:
         ------------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bears_power
 
-            >>> indicators.bears_power(period=13, column_name='bears_power')
+            >>> Indicators.bears_power(period=13, column_name='bears_power')
 
             :param int period: Period, default: 13
             :param str column_name: Column name, default: bears_power
             :return: None
         """
-        df_tmp = self.df[[self.columns['Close'], self.columns['Low']]]
-        df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
-        df_tmp[column_name] = df_tmp['ema'] - df_tmp[self.columns['Low']]
+        df_tmp = self.df[[self._columns['Close'], self._columns['Low']]]
+        df_tmp = df_tmp.assign(ema=df_tmp[self._columns['Close']].ewm(span=period, adjust=False).mean())
+        df_tmp[column_name] = df_tmp['ema'] - df_tmp[self._columns['Low']]
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
@@ -286,7 +286,7 @@ class Indicators:
         ---------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bollinger_bands
 
-            >>> indicators.bollinger_bands(self, period=20, deviation=2, column_name_top='bollinger_up', column_name_mid='bollinger_mid', column_name_bottom='bollinger_bottom')
+            >>> Indicators.bollinger_bands(self, period=20, deviation=2, column_name_top='bollinger_up', column_name_mid='bollinger_mid', column_name_bottom='bollinger_bottom')
 
             :param int period: Period, default 20
             :param int deviation: Number of Standard Deviations, default 2
@@ -295,9 +295,9 @@ class Indicators:
             :param str column_name_bottom: default bollinger_down
             :return: None
         """
-        df_tmp = self.df[[self.columns['Close']]]
-        df_tmp = df_tmp.assign(mid=df_tmp[self.columns['Close']].rolling(window=period).mean())
-        df_tmp = df_tmp.assign(stdev=df_tmp[self.columns['Close']].rolling(window=period).std(ddof=0))
+        df_tmp = self.df[[self._columns['Close']]]
+        df_tmp = df_tmp.assign(mid=df_tmp[self._columns['Close']].rolling(window=period).mean())
+        df_tmp = df_tmp.assign(stdev=df_tmp[self._columns['Close']].rolling(window=period).std(ddof=0))
         df_tmp = df_tmp.assign(tl=df_tmp.mid + deviation * df_tmp.stdev)
         df_tmp = df_tmp.assign(bl=df_tmp.mid - deviation * df_tmp.stdev)
 
@@ -311,15 +311,15 @@ class Indicators:
         ------------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/bulls_power
 
-            >>> indicators.bulls_power(period=13, column_name='bulls_power')
+            >>> Indicators.bulls_power(period=13, column_name='bulls_power')
 
             :param int period: Period, default: 13
             :param str column_name: Column name, default: bulls_power
             :return: None
         """
-        df_tmp = self.df[[self.columns['Close'], self.columns['High']]]
-        df_tmp = df_tmp.assign(ema=df_tmp[self.columns['Close']].ewm(span=period, adjust=False).mean())
-        df_tmp[column_name] = df_tmp[self.columns['High']] - df_tmp['ema']
+        df_tmp = self.df[[self._columns['Close'], self._columns['High']]]
+        df_tmp = df_tmp.assign(ema=df_tmp[self._columns['Close']].ewm(span=period, adjust=False).mean())
+        df_tmp[column_name] = df_tmp[self._columns['High']] - df_tmp['ema']
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
@@ -329,17 +329,17 @@ class Indicators:
         -----------------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/commodity_channel_index
 
-            >>> indicators.cci(period=14, column_name='cci')
+            >>> Indicators.cci(period=14, column_name='cci')
 
             :param int period: Period, default: 14
             :param str column_name: Column name, default: cci
             :return: None
         """
         pd.set_option('display.max_columns', 500)
-        df_tmp = self.df[[self.columns['High'], self.columns['Low'], self.columns['Close']]]
-        df_tmp = df_tmp.assign(tp=(df_tmp[self.columns['High']]
-                                   + df_tmp[self.columns['Low']]
-                                   + df_tmp[self.columns['Close']]) / 3)
+        df_tmp = self.df[[self._columns['High'], self._columns['Low'], self._columns['Close']]]
+        df_tmp = df_tmp.assign(tp=(df_tmp[self._columns['High']]
+                                   + df_tmp[self._columns['Low']]
+                                   + df_tmp[self._columns['Close']]) / 3)
 
         df_tmp = df_tmp.assign(tp_sma=df_tmp.tp.rolling(window=period).mean())
         df_tmp = df_tmp.assign(tp_mad=df_tmp.tp.rolling(window=period).apply(mad, raw=False))
@@ -355,20 +355,20 @@ class Indicators:
         --------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/demarker
 
-            >>> indicators.de_marker(period=14, column_name='dem')
+            >>> Indicators.de_marker(period=14, column_name='dem')
 
             :param int period: Period, default: 14
             :param str column_name: Column name, default: dem
             :return: None
         """
-        df_tmp = self.df[[self.columns['High'], self.columns['Low']]]
+        df_tmp = self.df[[self._columns['High'], self._columns['Low']]]
 
-        df_tmp = df_tmp.assign(hdif=(df_tmp[self.columns['High']] > df_tmp[self.columns['High']].shift(1)).astype(int))
-        df_tmp = df_tmp.assign(hsub=df_tmp[self.columns['High']] - df_tmp[self.columns['High']].shift(1))
+        df_tmp = df_tmp.assign(hdif=(df_tmp[self._columns['High']] > df_tmp[self._columns['High']].shift(1)).astype(int))
+        df_tmp = df_tmp.assign(hsub=df_tmp[self._columns['High']] - df_tmp[self._columns['High']].shift(1))
         df_tmp = df_tmp.assign(demax=np.where(df_tmp.hdif == 0, 0, df_tmp.hsub))
 
-        df_tmp = df_tmp.assign(ldif=(df_tmp[self.columns['Low']] < df_tmp[self.columns['Low']].shift(1)).astype(int))
-        df_tmp = df_tmp.assign(lsub=df_tmp[self.columns['Low']].shift(1) - df_tmp[self.columns['Low']])
+        df_tmp = df_tmp.assign(ldif=(df_tmp[self._columns['Low']] < df_tmp[self._columns['Low']].shift(1)).astype(int))
+        df_tmp = df_tmp.assign(lsub=df_tmp[self._columns['Low']].shift(1) - df_tmp[self._columns['Low']])
         df_tmp = df_tmp.assign(demin=np.where(df_tmp.ldif == 0, 0, df_tmp.lsub))
 
         df_tmp['sma_demax'] = df_tmp['demax'].rolling(window=period).mean()
@@ -387,7 +387,7 @@ class Indicators:
         ------------------
             https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/force_index
 
-            >>> indicators.force_index(period=13, method='sma', apply_to='Close', column_name='frc')
+            >>> Indicators.force_index(period=13, method='sma', apply_to='Close', column_name='frc')
 
             :param int period: Period, default: 13
             :param str method: Moving average method. Can be 'sma', 'smma' or 'ema'. Default: sma
@@ -395,7 +395,7 @@ class Indicators:
             :param str column_name: Column name, default: frc
             :return: None
         """
-        df_tmp = self.df[[apply_to, self.columns['Volume']]]
+        df_tmp = self.df[[apply_to, self._columns['Volume']]]
         if method == 'sma':
             df_tmp = df_tmp.assign(ma=df_tmp[apply_to].rolling(window=period).mean())
         elif method == 'smma':
@@ -405,7 +405,7 @@ class Indicators:
             df_tmp = df_tmp.assign(ma=df_tmp[apply_to].ewm(span=period, adjust=False).mean())
         else:
             raise WrongMAMethod('The "method" can be only "sma", "ema" or "smma"')
-        df_tmp = df_tmp.assign(frc=(df_tmp.ma - df_tmp.ma.shift(1)) * df_tmp[self.columns['Volume']])
+        df_tmp = df_tmp.assign(frc=(df_tmp.ma - df_tmp.ma.shift(1)) * df_tmp[self._columns['Volume']])
         df_tmp = df_tmp[['frc']]
         df_tmp = df_tmp.rename(columns={'frc': column_name})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
