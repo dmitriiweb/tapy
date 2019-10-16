@@ -33,7 +33,7 @@ setup(
     description='Technical Indicators for the Pandas\' Dataframes',
     long_description=open('README.rst').read(),
     author='Dmitrii Kurlov',
-    author_email='winston.smith.spb@gmail.com',
+    author_email='dmitriik@tutanota.com',
     url='https://github.com/dmitriiweb/tapy',
     packages=find_packages(exclude=['*test*']),
     install_requires=INSTALL_REQUIRES,
