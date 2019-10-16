@@ -51,6 +51,7 @@ Available Indicators
 12. Force Index (FRC)
 13. Fractals
 14. Gator Oscillator
-15. Simple Moving Average (SMA)
-16. Smoothed Moving Average (SMMA)
+15. Ichimoku Kinko Hyo
+16. Simple Moving Average (SMA)
+17. Smoothed Moving Average (SMMA)
 

@@ -466,7 +466,7 @@ class Indicators:
             :param int shift_lips: Lips shift, default: 3
             :param str column_name_val1: Column name for Value1, default value1
             :param str column_name_val2: Column name for Value2, default value2
-            :return:
+            :return: None
         """
         df_tmp = self.df[[self._columns['High'], self._columns['Low']]]
         df_tmp = df_tmp.assign(hc=(df_tmp[self._columns['High']] + df_tmp[self._columns['Low']]) / 2)
@@ -483,11 +483,74 @@ class Indicators:
         df_tmp = df_tmp.merge(df_t, left_index=True, right_index=True)
         df_tmp = df_tmp.merge(df_l, left_index=True, right_index=True)
 
-        df_tmp = df_tmp.assign(val1=df_tmp['jaws']-df_tmp['teeth'])
-        df_tmp = df_tmp.assign(val2=-(df_tmp['teeth']-df_tmp['lips']))
+        df_tmp = df_tmp.assign(val1=df_tmp['jaws'] - df_tmp['teeth'])
+        df_tmp = df_tmp.assign(val2=-(df_tmp['teeth'] - df_tmp['lips']))
 
         df_tmp = df_tmp[['val1', 'val2']]
         df_tmp = df_tmp.rename(columns={'val1': column_name_val1, 'val2': column_name_val2})
+
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def ichimoku_kinko_hyo(
+            self,
+            period_tenkan_sen=9,
+            period_kijun_sen=26,
+            period_senkou_span_b=52,
+            column_name_chikou_span='chikou_span',
+            column_name_tenkan_sen='tenkan_sen',
+            column_name_kijun_sen='kijun_sen',
+            column_name_senkou_span_a='senkou_span_a',
+            column_name_senkou_span_b='senkou_span_b'
+    ):
+        """
+        Ichimoku Kinko Hyo
+        ------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/ichimoku
+
+            >>> Indicators.ichimoku_kinko_hyo(period_tenkan_sen=9, period_kijun_sen=26, period_senkou_span_b=52, column_name_chikou_span='chikou_span', column_name_tenkan_sen='tenkan_sen', column_name_kijun_sen='kijun_sen', column_name_senkou_span_a='senkou_span_a', column_name_senkou_span_b='senkou_span_b')
+
+            :param int period_tenkan_sen: Period for Tenkan-sen, default: 9
+            :param int period_kijun_sen: Period for Kijun-sen, default: 26
+            :param int period_senkou_span_b: Period for Senkou-span, default: 52
+            :param str column_name_chikou_span: Column name for Chikou-span, default: chikou_span
+            :param str column_name_tenkan_sen: Column name for Tenkan-sen, default: tenkan_sen
+            :param str column_name_kijun_sen: Column name for Kijun-sen, default: kijun_sen
+            :param str column_name_senkou_span_a: Column name for Senkou Span A, default: senkou_span_a
+            :param str column_name_senkou_span_b: Column name for Senkou Span B, default: senkou_span_b
+            :return: None
+        """
+        df_tmp = self.df[[self._columns['High'], self._columns['Low'], self._columns['Close']]]
+
+        df_tmp = df_tmp.assign(tenkan_h=df_tmp[self._columns['High']].rolling(window=period_tenkan_sen).max())
+        df_tmp = df_tmp.assign(tenkan_l=df_tmp[self._columns['Low']].rolling(window=period_tenkan_sen).min())
+        df_tmp = df_tmp.assign(tenkan=(df_tmp.tenkan_h + df_tmp.tenkan_l) / 2)
+        del df_tmp['tenkan_h']
+        del df_tmp['tenkan_l']
+
+        df_tmp = df_tmp.assign(kijun_h=df_tmp[self._columns['High']].rolling(window=period_kijun_sen).max())
+        df_tmp = df_tmp.assign(kijun_l=df_tmp[self._columns['Low']].rolling(window=period_kijun_sen).min())
+        df_tmp = df_tmp.assign(kijun=(df_tmp.kijun_h + df_tmp.kijun_l) / 2)
+        del df_tmp['kijun_h']
+        del df_tmp['kijun_l']
+
+        df_tmp = df_tmp.assign(ssa=((df_tmp.tenkan + df_tmp.kijun)/2).shift(period_kijun_sen))
+
+        df_tmp = df_tmp.assign(ssb_h=df_tmp[self._columns['High']].rolling(window=period_senkou_span_b).max())
+        df_tmp = df_tmp.assign(ssb_l=df_tmp[self._columns['Low']].rolling(window=period_senkou_span_b).min())
+        df_tmp = df_tmp.assign(ssb=((df_tmp.ssb_h+df_tmp.ssb_l)/2).shift(period_kijun_sen))
+        del df_tmp['ssb_h']
+        del df_tmp['ssb_l']
+
+        df_tmp = df_tmp.assign(chikou=df_tmp[self._columns['Close']].shift(-period_kijun_sen))
+
+        df_tmp = df_tmp[['tenkan', 'kijun', 'ssa', 'ssb', 'chikou']]
+        df_tmp = df_tmp.rename(columns={
+            'tenkan': column_name_tenkan_sen,
+            'kijun': column_name_kijun_sen,
+            'ssa': column_name_senkou_span_a,
+            'ssb': column_name_senkou_span_b,
+            'chikou': column_name_chikou_span
+        })
 
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 

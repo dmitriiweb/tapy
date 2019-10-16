@@ -161,6 +161,29 @@ class TestIndicators(unittest.TestCase):
         self.assertEqual(val1, 0.001263)
         self.assertEqual(val2, -0.001376)
 
+    def test_ichimoku_kinko_hyo(self):
+        col_chikou = 'chikou'
+        col_tenkan = 'tenkan'
+        col_kijun = 'kijun'
+        col_sb = 'sb'
+        col_sa = 'sa'
+        self.indicators.ichimoku_kinko_hyo(column_name_chikou_span=col_chikou,
+                                           column_name_tenkan_sen=col_tenkan,
+                                           column_name_kijun_sen=col_kijun,
+                                           column_name_senkou_span_b=col_sb,
+                                           column_name_senkou_span_a=col_sa)
+        df = self.indicators.df
+        val_chikou = get_val(df, col_chikou, -27, 5)
+        val_tenkan = get_val(df, col_tenkan, -1, 5)
+        val_kijun = get_val(df, col_kijun, -1, 5)
+        val_sb = get_val(df, col_sb, -1, 5)
+        val_sa = get_val(df, col_sa, -1, 5)
+        self.assertEqual(val_chikou, 1.10167)
+        self.assertEqual(val_tenkan, 1.10147)
+        self.assertEqual(val_kijun, 1.10316)
+        self.assertEqual(val_sb, 1.10442)
+        self.assertEqual(val_sa, 1.10494)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)
