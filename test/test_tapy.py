@@ -151,6 +151,16 @@ class TestIndicators(unittest.TestCase):
         self.assertTrue(fractal_high)
         self.assertFalse(df.iloc[-5][col_low])
 
+    def test_gator(self):
+        col_val1 = 'val1'
+        col_val2 = 'val2'
+        self.indicators.gator(column_name_val1=col_val1, column_name_val2=col_val2)
+        df = self.indicators.df
+        val1 = get_val(df, col_val1, -1, 6)
+        val2 = get_val(df, col_val2, -1, 6)
+        self.assertEqual(val1, 0.001263)
+        self.assertEqual(val2, -0.001376)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

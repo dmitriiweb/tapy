@@ -50,6 +50,7 @@ Available Indicators
 11. Exponential Moving Average (EMA)
 12. Force Index (FRC)
 13. Fractals
-14. Simple Moving Average (SMA)
-15. Smoothed Moving Average (SMMA)
+14. Gator Oscillator
+15. Simple Moving Average (SMA)
+16. Smoothed Moving Average (SMMA)
 

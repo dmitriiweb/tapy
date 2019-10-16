@@ -3,7 +3,7 @@ import numpy as np
 
 from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
-__version__ = '1.6.0'
+__version__ = '1.7.0'
 
 
 class Indicators:
@@ -419,8 +419,6 @@ class Indicators:
 
             >>> Indicators.fractals(column_name_high='fractals_high', column_name_low='fractals_low')
 
-            If fractals are high than 1, if fractals are low than -1, else 0
-
             :param str column_name_high: Column name for High values, default: fractals_high
             :param str column_name_low: Column name for Low values, default: fractals_low
             :return: None
@@ -443,3 +441,53 @@ class Indicators:
         df_tmp = df_tmp[['fh', 'fl']]
         df_tmp = df_tmp.rename(columns={'fh': column_name_high, 'fl': column_name_low})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def gator(self,
+              period_jaws=13,
+              period_teeth=8,
+              period_lips=5,
+              shift_jaws=8,
+              shift_teeth=5,
+              shift_lips=3,
+              column_name_val1='value1',
+              column_name_val2='value2'):
+        """
+        Gator Oscillator
+        -----------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/gator_oscillator
+
+            >>> Indicators.gator(period_jaws=13, period_teeth=8, period_lips=5, shift_jaws=8, shift_teeth=5, shift_lips=3, column_name_val1='value1', column_name_val2='value2')
+
+            :param int period_jaws: Jaws period, default: 13
+            :param int period_teeth: Teeth period, default: 8
+            :param int period_lips: Lips period, default: 5
+            :param int shift_jaws: Jaws shift, default: 8
+            :param int shift_teeth: Teeth shift, default: 5
+            :param int shift_lips: Lips shift, default: 3
+            :param str column_name_val1: Column name for Value1, default value1
+            :param str column_name_val2: Column name for Value2, default value2
+            :return:
+        """
+        df_tmp = self.df[[self._columns['High'], self._columns['Low']]]
+        df_tmp = df_tmp.assign(hc=(df_tmp[self._columns['High']] + df_tmp[self._columns['Low']]) / 2)
+        df_j = calculate_smma(df_tmp, period_jaws, 'jaws', 'hc')
+        df_t = calculate_smma(df_tmp, period_teeth, 'teeth', 'hc')
+        df_l = calculate_smma(df_tmp, period_lips, 'lips', 'hc')
+
+        # Shift SMMAs
+        df_j['jaws'] = df_j['jaws'].shift(shift_jaws)
+        df_t['teeth'] = df_t['teeth'].shift(shift_teeth)
+        df_l['lips'] = df_l['lips'].shift(shift_lips)
+
+        df_tmp = df_tmp.merge(df_j, left_index=True, right_index=True)
+        df_tmp = df_tmp.merge(df_t, left_index=True, right_index=True)
+        df_tmp = df_tmp.merge(df_l, left_index=True, right_index=True)
+
+        df_tmp = df_tmp.assign(val1=df_tmp['jaws']-df_tmp['teeth'])
+        df_tmp = df_tmp.assign(val2=-(df_tmp['teeth']-df_tmp['lips']))
+
+        df_tmp = df_tmp[['val1', 'val2']]
+        df_tmp = df_tmp.rename(columns={'val1': column_name_val1, 'val2': column_name_val2})
+
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
