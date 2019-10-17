@@ -3,7 +3,7 @@ import numpy as np
 
 from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
-__version__ = '1.8.0'
+__version__ = '1.8.1'
 
 
 class Indicators:
