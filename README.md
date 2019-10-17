@@ -44,5 +44,6 @@ pip install -U tapy
 14. Gator Oscillator
 15. Ichimoku Kinko Hyo
 16. Market Facilitation Index (BW MFI)
-17. Simple Moving Average (SMA)
-18. Smoothed Moving Average (SMMA)
+17. Momentum
+18. Simple Moving Average (SMA)
+19. Smoothed Moving Average (SMMA)

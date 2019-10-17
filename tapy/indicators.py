@@ -562,7 +562,7 @@ class Indicators:
 
             >>> Indicators.bw_mfi(column_name='bw_mfi')
 
-            :param column_name: Column name, default: bw_mfi
+            :param str column_name: Column name, default: bw_mfi
             :return: None
         """
         df_tmp = self.df[[self._columns['High'], self._columns['Low'], self._columns['Volume']]]
@@ -572,3 +572,25 @@ class Indicators:
         df_tmp = df_tmp[['bw']]
         df_tmp = df_tmp.rename(columns={'bw': column_name})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+    def momentum(self, period=14, column_name='momentum'):
+        """
+        Momentum
+        --------
+            https://www.metatrader4.com/ru/trading-platform/help/analytics/tech_indicators/momentum
+
+            >>> Indicators.momentum(period=14, column_name='momentum')
+
+            :param int period: Period, default: 14
+            :param strr column_name: Column name, default: momentum
+            :return:
+        """
+        close = self._columns['Close']
+        df_tmp = self.df[[close]]
+        df_tmp = df_tmp.assign(
+            m=df_tmp[close] / df_tmp[close].shift(period) * 100
+        )
+        df_tmp = df_tmp[['m']]
+        df_tmp = df_tmp.rename(columns={'m': column_name})
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+

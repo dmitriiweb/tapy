@@ -191,6 +191,13 @@ class TestIndicators(unittest.TestCase):
         val_bw = get_val(df, col, -1, 4)
         self.assertEqual(val_bw, 0.0556)
 
+    def test_momentum(self):
+        col = 'mom'
+        self.indicators.momentum(column_name=col)
+        df = self.indicators.df
+        val = get_val(df, col, -1, 4)
+        self.assertEqual(val, 99.6094)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)
