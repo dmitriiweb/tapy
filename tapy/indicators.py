@@ -594,3 +594,54 @@ class Indicators:
         df_tmp = df_tmp.rename(columns={'m': column_name})
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
+    def mfi(self, period=5, column_name='mfi'):
+        """
+        Money Flow Index (MFI)
+        -----------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/money_flow_index
+
+            >>> Indicators.mfi(period=5, column_name='mfi')
+        :param int period: Period, default: 5
+        :param str column_name: Column name, default: mfi
+        :return: None
+        """
+        high, low, close, volume = self._columns['High'], self._columns['Low'], self._columns['Close'], self._columns[
+            'Volume']
+        df_tmp = self.df[[high, low, close, volume]]
+
+        df_tmp = df_tmp.assign(tp=(df_tmp[high] + df_tmp[low] + df_tmp[close])/3)
+        df_tmp = df_tmp.assign(mf=df_tmp['tp'] * df_tmp[volume])
+
+        df_tmp = df_tmp.assign(
+            pmf=np.where(
+                df_tmp['tp'] > df_tmp['tp'].shift(1),
+                df_tmp['mf'],
+                0.0
+            )
+        )
+        df_tmp = df_tmp.assign(
+            nmf=np.where(
+                df_tmp['tp'] < df_tmp['tp'].shift(1),
+                df_tmp['mf'],
+                0.0
+            )
+        )
+
+        df_tmp['pmfs'] = df_tmp.pmf.rolling(window=period).sum()
+        df_tmp['nmfs'] = df_tmp.nmf.rolling(window=period).sum()
+
+        del df_tmp['tp']
+        del df_tmp['mf']
+        del df_tmp['pmf']
+        del df_tmp['nmf']
+
+        df_tmp = df_tmp.round(decimals=10)
+        df_tmp = df_tmp.assign(mr=df_tmp.pmfs / df_tmp.nmfs)
+        df_tmp = df_tmp.assign(mfi=100 - (100 / (1 + df_tmp.mr)))
+
+        df_tmp = df_tmp[['mfi']]
+        df_tmp = df_tmp.rename(columns={'mfi': column_name})
+
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
+
+

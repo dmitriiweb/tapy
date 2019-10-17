@@ -54,6 +54,7 @@ Available Indicators
 15. Ichimoku Kinko Hyo
 16. Market Facilitation Index (BW MFI)
 17. Momentum
-18. Simple Moving Average (SMA)
-19. Smoothed Moving Average (SMMA)
+18. Money Flow Index (MFI)
+19. Simple Moving Average (SMA)
+20. Smoothed Moving Average (SMMA)
 

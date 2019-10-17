@@ -198,6 +198,13 @@ class TestIndicators(unittest.TestCase):
         val = get_val(df, col, -1, 4)
         self.assertEqual(val, 99.6094)
 
+    def test_mfi(self):
+        col = 'mfi'
+        self.indicators.mfi(column_name=col)
+        df = self.indicators.df
+        val = get_val(df, col, -2, 4)
+        self.assertEqual(val, 70.6982)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

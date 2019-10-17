@@ -47,5 +47,6 @@ Indicators
 .. automodule:: tapy.Indicators.ichimoku_kinko_hyo
 .. automodule:: tapy.Indicators.bw_mfi
 .. automodule:: tapy.Indicators.momentum
+.. automodule:: tapy.Indicators.mfi
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma
