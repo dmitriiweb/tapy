@@ -3,7 +3,7 @@ import numpy as np
 
 from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
-__version__ = '1.7.0'
+__version__ = '1.8.0'
 
 
 class Indicators:
@@ -533,11 +533,11 @@ class Indicators:
         del df_tmp['kijun_h']
         del df_tmp['kijun_l']
 
-        df_tmp = df_tmp.assign(ssa=((df_tmp.tenkan + df_tmp.kijun)/2).shift(period_kijun_sen))
+        df_tmp = df_tmp.assign(ssa=((df_tmp.tenkan + df_tmp.kijun) / 2).shift(period_kijun_sen))
 
         df_tmp = df_tmp.assign(ssb_h=df_tmp[self._columns['High']].rolling(window=period_senkou_span_b).max())
         df_tmp = df_tmp.assign(ssb_l=df_tmp[self._columns['Low']].rolling(window=period_senkou_span_b).min())
-        df_tmp = df_tmp.assign(ssb=((df_tmp.ssb_h+df_tmp.ssb_l)/2).shift(period_kijun_sen))
+        df_tmp = df_tmp.assign(ssb=((df_tmp.ssb_h + df_tmp.ssb_l) / 2).shift(period_kijun_sen))
         del df_tmp['ssb_h']
         del df_tmp['ssb_l']
 
@@ -554,3 +554,21 @@ class Indicators:
 
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
+    def bw_mfi(self, column_name='bw_mfi'):
+        """
+        Market Facilitation Index (BW MFI)
+        ----------------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/market_facilitation_index
+
+            >>> Indicators.bw_mfi(column_name='bw_mfi')
+
+            :param column_name: Column name, default: bw_mfi
+            :return: None
+        """
+        df_tmp = self.df[[self._columns['High'], self._columns['Low'], self._columns['Volume']]]
+        df_tmp = df_tmp.assign(
+            bw=(df_tmp[self._columns['High']] - df_tmp[self._columns['Low']]) / df_tmp[self._columns['Volume']] * 100000
+        )
+        df_tmp = df_tmp[['bw']]
+        df_tmp = df_tmp.rename(columns={'bw': column_name})
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

@@ -52,6 +52,7 @@ Available Indicators
 13. Fractals
 14. Gator Oscillator
 15. Ichimoku Kinko Hyo
-16. Simple Moving Average (SMA)
-17. Smoothed Moving Average (SMMA)
+16. Market Facilitation Index (BW MFI)
+17. Simple Moving Average (SMA)
+18. Smoothed Moving Average (SMMA)
 

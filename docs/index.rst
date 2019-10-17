@@ -45,5 +45,6 @@ Indicators
 .. automodule:: tapy.Indicators.fractals
 .. automodule:: tapy.Indicators.gator
 .. automodule:: tapy.Indicators.ichimoku_kinko_hyo
+.. automodule:: tapy.Indicators.bw_mfi
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma
