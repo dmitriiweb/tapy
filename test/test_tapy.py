@@ -205,6 +205,16 @@ class TestIndicators(unittest.TestCase):
         val = get_val(df, col, -2, 4)
         self.assertEqual(val, 70.6982)
 
+    def test_macd(self):
+        col_val = 'val'
+        col_signal = 'signal'
+        self.indicators.macd(column_name_value=col_val, column_name_signal=col_signal)
+        df = self.indicators.df
+        value = get_val(df, col_val, -1, 6)
+        signal = get_val(df, col_signal, -1, 6)
+        self.assertEqual(value, -0.000973)
+        self.assertEqual(signal, -0.000827)
+
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)

@@ -3,7 +3,7 @@ import numpy as np
 
 from .utils import calculate_ao, calculate_sma, calculate_smma, mad
 
-__version__ = '1.8.1'
+__version__ = '1.9.0'
 
 
 class Indicators:
@@ -609,7 +609,7 @@ class Indicators:
             'Volume']
         df_tmp = self.df[[high, low, close, volume]]
 
-        df_tmp = df_tmp.assign(tp=(df_tmp[high] + df_tmp[low] + df_tmp[close])/3)
+        df_tmp = df_tmp.assign(tp=(df_tmp[high] + df_tmp[low] + df_tmp[close]) / 3)
         df_tmp = df_tmp.assign(mf=df_tmp['tp'] * df_tmp[volume])
 
         df_tmp = df_tmp.assign(
@@ -644,4 +644,37 @@ class Indicators:
 
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
 
+    def macd(
+            self,
+            period_fast=12,
+            period_slow=26,
+            period_signal=9,
+            column_name_value='macd_value',
+            column_name_signal='macd_signal'
+    ):
+        """
+        Moving Average Convergence/Divergence (MACD)
+        --------------------------------------------
+            https://www.metatrader4.com/en/trading-platform/help/analytics/tech_indicators/macd
 
+            >>> Indicators.macd(self, period_fast=12, period_slow=26, period_signal=9, column_name_value='macd_value', column_name_signal='macd_signal')
+
+            :param int period_fast: Period for Fast EMA, default: 12
+            :param int period_slow: Period for Slow EMA, default: 26
+            :param int period_signal: Period for Signal Line, default 9
+            :param str column_name_value: Column name for MACD Value, default macd_value
+            :param str column_name_signal: Column name for MACD Signal, default macd_signal
+            :return: None
+            """
+        close = self._columns['Close']
+        df_tmp = self.df[[close]]
+
+        df_tmp = df_tmp.assign(fast=df_tmp[close].ewm(span=period_fast, adjust=False).mean())
+        df_tmp = df_tmp.assign(slow=df_tmp[close].ewm(span=period_slow, adjust=False).mean())
+        df_tmp = df_tmp.assign(value=df_tmp['fast'] - df_tmp['slow'])
+        df_tmp = df_tmp.assign(signal=df_tmp['value'].rolling(window=period_signal).mean())
+
+        df_tmp = df_tmp[['value', 'signal']]
+        df_tmp = df_tmp.rename(columns={'value': column_name_value, 'signal': column_name_signal})
+
+        self.df = self.df.merge(df_tmp, left_index=True, right_index=True)

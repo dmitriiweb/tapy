@@ -46,5 +46,6 @@ pip install -U tapy
 16. Market Facilitation Index (BW MFI)
 17. Momentum
 18. Money Flow Index (MFI)
-19. Simple Moving Average (SMA)
-20. Smoothed Moving Average (SMMA)
+19. Moving Average Convergence/Divergence (MACD)
+20. Simple Moving Average (SMA)
+21. Smoothed Moving Average (SMMA)
