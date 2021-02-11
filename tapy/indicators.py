@@ -31,11 +31,11 @@ class Indicators:
     def __init__(
             self,
             df,
-            open_col='Open',
-            high_col='High',
-            low_col='Low',
-            close_col='Close',
-            volume_col='Volume'
+            open_col='open',
+            high_col='high',
+            low_col='low',
+            close_col='close',
+            volume_col='volume'
     ):
         """
         Initiate Indicators object
