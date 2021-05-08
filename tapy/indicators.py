@@ -16,10 +16,10 @@ class Indicators:
         >>> import pandas as pd
         >>> from tapy import Indicators
         >>> df = pd.read_csv('EURUSD60.csv')
-        >>> indicators = Indicators(df)
-        >>> indicators.accelerator_oscillator(column_name='AC')
-        >>> indicators.sma()
-        >>> df = indicators.df
+        >>> i= Indicators(df)
+        >>> i.accelerator_oscillator(column_name='AC')
+        >>> i.sma()
+        >>> df = i.df
         >>> df.tail()
                     Date   Time     Open     High      Low    Close  Volume        AC       sma
         3723  2019.09.20  16:00  1.10022  1.10105  1.10010  1.10070    2888 -0.001155  1.101296
