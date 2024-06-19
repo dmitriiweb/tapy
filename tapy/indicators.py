@@ -2,14 +2,19 @@ import pandas as pd
 
 import numpy as np
 
-from .utils import calculate_alma, calculate_ao, calculate_sma, calculate_smma, mad
+from .utils import (
+    calculate_alma,
+    calculate_ao,
+    calculate_sma,
+    calculate_smma,
+    mad,
+)
 
 __version__ = "1.9.1"
 
 
 class Indicators:
-    """
-    Add technical indicators data to a pandas data frame
+    """Add technical indicators data to a pandas data frame.
 
     Example:
     ~~~~~~~~
@@ -38,16 +43,16 @@ class Indicators:
         close_col="Close",
         volume_col="Volume",
     ):
-        """
-        Initiate Indicators object
+        """Initiate Indicators object.
 
-        :param pandas data frame df: Should contain OHLC columns and Volume column
+        :param pandas data frame df: Should contain OHLC columns and
+            Volume column
         :param str open_col: Name of Open column in df
         :param str high_col: Name of High column in df
         :param str low_col: Name of Low column in df
         :param str close_col: Name of Close column in df
-        :param str volume_col: Name of Volume column in df. This column is optional
-            and require only if indicator use this data.
+        :param str volume_col: Name of Volume column in df. This column
+            is optional and require only if indicator use this data.
         """
         self.df = df
         self._columns = {
@@ -117,17 +122,22 @@ class Indicators:
         )
 
     def alma(
-        self, period=5, offset=0.85, sigma=6, apply_to="Close", column_name="alma"
+        self,
+        period=5,
+        offset=0.85,
+        sigma=6,
+        apply_to="Close",
+        column_name="alma",
     ):
         """
-        Arnaud Legoux Moving Average
+        Arnaud Legoux Moving Average (ALMA)
         ----------------------------
-        
+
             https://realtrading.com/trading-blog/arnaud-legoux-moving-average/
 
             >>> Indicators.alma(period=5, offset=0.85, sigma=6, apply_to='Close')
 
-            :param int period : No of calculation period. Defaults to 5.
+            :param int period: No of calculation period. Defaults to 5.
             :offset (float, optional): N. Defaults to 0.85.
             :sigma (int, optional): No.of standard deviation. Defaults to 6.
             :apply_to (str, optional): Which column use for calculation.
@@ -149,11 +159,13 @@ class Indicators:
             :return: None
         """
         # Data frame for storing temporary data
+
         df_tmp = pd.DataFrame()
         df_tmp["High"] = self.df[self._columns["High"]]
         df_tmp["Low"] = self.df[self._columns["Low"]]
 
         # Calculate Awesome Oscillator
+
         calculate_ao(df_tmp, column_name)
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
@@ -172,17 +184,21 @@ class Indicators:
         """
         pass
         # Data frame for storing temporary data
+
         df_tmp = pd.DataFrame()
         df_tmp["High"] = self.df[self._columns["High"]]
         df_tmp["Low"] = self.df[self._columns["Low"]]
 
         # Calculate Awesome Oscillator
+
         calculate_ao(df_tmp, "ao")
 
         # Calculate SMA for Awesome Oscillator
+
         calculate_sma(df_tmp, 5, "sma_ao", "ao")
 
         # Calculate Accelerator Oscillator
+
         df_tmp[column_name] = df_tmp["ao"] - df_tmp["sma_ao"]
         df_tmp = df_tmp[[column_name]]
         self.df = self.df.merge(df_tmp, left_index=True, right_index=True)
@@ -201,6 +217,7 @@ class Indicators:
 
         """
         # Temporary df
+
         df_tmp = pd.DataFrame()
         df_tmp["close"] = self.df[self._columns["Close"]]
         df_tmp["high"] = self.df[self._columns["High"]]
@@ -258,6 +275,7 @@ class Indicators:
         df_l = calculate_smma(df_median, period_lips, column_name_lips, median_col)
 
         # Shift SMMAs
+
         df_j[column_name_jaws] = df_j[column_name_jaws].shift(shift_jaws)
         df_t[column_name_teeth] = df_t[column_name_teeth].shift(shift_teeth)
         df_l[column_name_lips] = df_l[column_name_lips].shift(shift_lips)
@@ -279,7 +297,11 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[
-            [self._columns["High"], self._columns["Low"], self._columns["Close"]]
+            [
+                self._columns["High"],
+                self._columns["Low"],
+                self._columns["Close"],
+            ]
         ]
         df_tmp = df_tmp.assign(
             max_min=df_tmp[self._columns["High"]] - df_tmp[self._columns["Low"]]
@@ -394,7 +416,11 @@ class Indicators:
         """
         pd.set_option("display.max_columns", 500)
         df_tmp = self.df[
-            [self._columns["High"], self._columns["Low"], self._columns["Close"]]
+            [
+                self._columns["High"],
+                self._columns["Low"],
+                self._columns["Close"],
+            ]
         ]
         df_tmp = df_tmp.assign(
             tp=(
@@ -585,6 +611,7 @@ class Indicators:
         df_l = calculate_smma(df_tmp, period_lips, "lips", "hc")
 
         # Shift SMMAs
+
         df_j["jaws"] = df_j["jaws"].shift(shift_jaws)
         df_t["teeth"] = df_t["teeth"].shift(shift_teeth)
         df_l["lips"] = df_l["lips"].shift(shift_lips)
@@ -632,7 +659,11 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[
-            [self._columns["High"], self._columns["Low"], self._columns["Close"]]
+            [
+                self._columns["High"],
+                self._columns["Low"],
+                self._columns["Close"],
+            ]
         ]
 
         df_tmp = df_tmp.assign(
@@ -708,7 +739,11 @@ class Indicators:
             :return: None
         """
         df_tmp = self.df[
-            [self._columns["High"], self._columns["Low"], self._columns["Volume"]]
+            [
+                self._columns["High"],
+                self._columns["Low"],
+                self._columns["Volume"],
+            ]
         ]
         df_tmp = df_tmp.assign(
             bw=(df_tmp[self._columns["High"]] - df_tmp[self._columns["Low"]])

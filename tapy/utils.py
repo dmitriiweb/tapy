@@ -1,16 +1,15 @@
-import math
 import pandas as pd
 import numpy as np
 from numpy import mean, absolute
 
 
 def calculate_sma(df, period, column_name, apply_to):
-    """Calculate Simple Moving Averaga"""
+    """Calculate Simple Moving Averaga."""
     df[column_name] = df[apply_to].rolling(window=period).mean()
 
 
 def calculate_ao(df, column_name):
-    """Calculate Awesome Oscillator"""
+    """Calculate Awesome Oscillator."""
     # Data frame for storing temporary data
     df_tmp = pd.DataFrame()
 
@@ -28,7 +27,7 @@ def calculate_ao(df, column_name):
 
 
 def calculate_smma(df, period, column_name, apply_to):
-    """Calculate Smoothed Moving Average"""
+    """Calculate Smoothed Moving Average."""
     df_tmp = df[[apply_to]]
     first_val = df_tmp[apply_to].iloc[:period].mean()
     df_tmp = df_tmp.assign(column_name=None)
@@ -36,7 +35,8 @@ def calculate_smma(df, period, column_name, apply_to):
     for index, row in df_tmp.iterrows():
         if index > period:
             smma_val = (
-                df_tmp.at[index - 1, column_name] * (period - 1) + row[apply_to]
+                df_tmp.at[index - 1, column_name] * (period - 1)
+                + row[apply_to]
             ) / period
             df_tmp.at[index, column_name] = smma_val
     df_tmp = df_tmp[[column_name]]
@@ -44,12 +44,11 @@ def calculate_smma(df, period, column_name, apply_to):
 
 
 def mad(data, axis=None):
-    """Calculate Average absolute deviation"""
+    """Calculate Average absolute deviation."""
     return mean(absolute(data - mean(data, axis)), axis)
 
 
 def calculate_alma(df, period, offset, sigma, apply_to, column_name):
-
     m = offset * (period - 1)
     s = period / sigma
 

@@ -51,3 +51,4 @@ Indicators
 .. automodule:: tapy.Indicators.macd
 .. automodule:: tapy.Indicators.sma
 .. automodule:: tapy.Indicators.smma
+.. automodule:: tapy.Indicators.alma
