@@ -121,14 +121,18 @@ class Indicators:
     ):
         """
         Arnaud Legoux Moving Average
-
         ----------------------------
-        Args:
-            period (int, optional): _description_. Defaults to 5.
-            offset (float, optional): _description_. Defaults to 0.85.
-            sigma (int, optional): _description_. Defaults to 6.
-            apply_to (str, optional): _description_. Defaults to "Close".
-            column_name (str, optional): _description_. Defaults to "alma".
+        
+            https://realtrading.com/trading-blog/arnaud-legoux-moving-average/
+
+            >>> Indicators.alma(period=5, offset=0.85, sigma=6, apply_to='Close')
+
+            :param int period : No of calculation period. Defaults to 5.
+            :offset (float, optional): N. Defaults to 0.85.
+            :sigma (int, optional): No.of standard deviation. Defaults to 6.
+            :apply_to (str, optional): Which column use for calculation.
+                Can be *"Open"*, *"High"*, *"Low"* and *"Close"*.. Defaults to "Close".
+            :column_name (str, optional): Column name in datafram. Defaults to "alma".
         """
         self.df = calculate_alma(self.df, period, offset, sigma, apply_to, column_name)
 
