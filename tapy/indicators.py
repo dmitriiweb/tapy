@@ -2,7 +2,7 @@ import pandas as pd
 
 import numpy as np
 
-from .utils import calculate_ao, calculate_sma, calculate_smma, mad
+from .utils import calculate_alma, calculate_ao, calculate_sma, calculate_smma, mad
 
 __version__ = "1.9.1"
 
@@ -115,6 +115,22 @@ class Indicators:
         self.df[column_name] = (
             self.df[self._columns[apply_to]].ewm(span=period, adjust=False).mean()
         )
+
+    def alma(
+        self, period=5, offset=0.85, sigma=6, apply_to="Close", column_name="alma"
+    ):
+        """
+        Arnaud Legoux Moving Average
+
+        ----------------------------
+        Args:
+            period (int, optional): _description_. Defaults to 5.
+            offset (float, optional): _description_. Defaults to 0.85.
+            sigma (int, optional): _description_. Defaults to 6.
+            apply_to (str, optional): _description_. Defaults to "Close".
+            column_name (str, optional): _description_. Defaults to "alma".
+        """
+        self.df = calculate_alma(self.df, period, offset, sigma, apply_to, column_name)
 
     def awesome_oscillator(self, column_name="ao"):
         """
