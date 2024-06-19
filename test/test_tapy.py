@@ -215,6 +215,12 @@ class TestIndicators(unittest.TestCase):
         self.assertEqual(value, -0.000973)
         self.assertEqual(signal, -0.000827)
 
+    def test_alma(self):
+        col = 'alma'
+        self.indicators.alma(column_name=col)
+        df = self.indicators.df
+        value = get_val(df, col, -1, 6)
+        self.assertEqual(value, 1.101739)
 
 def get_val(df, column, val_index, round_to):
     val = round(df[column].tolist()[val_index], round_to)
