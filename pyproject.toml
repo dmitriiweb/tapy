@@ -22,12 +22,13 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<4"
-pandas = "^2.0"
+numpy = "<2"
+pandas = "^2.2.2"
 
 
 [tool.poetry.group.dev-tests.dependencies]
-coverage = "^7.5.3"
 pytest = "^8.2.2"
+pytest-cov = "^5.0.0"
 
 
 [tool.poetry.group.dev-docs.dependencies]

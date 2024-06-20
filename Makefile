@@ -7,8 +7,7 @@ format:
 
 .PHONY: test
 test:
-	coverage run -m pytest
-	coverage report
+	pytest --cov=extract_emails -vv test/
 
 .PHONY: clean
 clean:
