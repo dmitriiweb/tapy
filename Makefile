@@ -7,7 +7,7 @@ format:
 
 .PHONY: test
 test:
-	pytest --cov=extract_emails -vv test/
+	pytest --cov=tapy -vv test/
 
 .PHONY: clean
 clean:
