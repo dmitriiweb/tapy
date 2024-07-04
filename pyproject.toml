@@ -29,6 +29,7 @@ pandas = "^2.2.2"
 [tool.poetry.group.dev-tests.dependencies]
 pytest = "^8.2.2"
 pytest-cov = "^5.0.0"
+tox = "^4.16.0"
 
 
 [tool.poetry.group.dev-docs.dependencies]
