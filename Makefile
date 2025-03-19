@@ -2,8 +2,8 @@ version := $(shell python -c 'from tapy import __version__; print(__version__)')
 
 .PHONY: format
 format:
-	isort -rc tapy test *.py
 	ruff format tapy
+	ruff check tapy --select I --fix
 
 .PHONY: test
 test:
@@ -24,4 +24,3 @@ authors:
 	git log --format='%aN <%aE>' `git describe --abbrev=0 --tags`..@ | sort | uniq >> AUTHORS
 	cat AUTHORS | sort --ignore-case | uniq >> AUTHORS_
 	mv AUTHORS_ AUTHORS
-
