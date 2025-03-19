@@ -1,6 +1,6 @@
 [project]
 name = "tapy"
-version = "1.10.0"
+version = "1.11.0"
 description = "Technical Indicators for the Pandas' Dataframes"
 authors = [{ name = "Dmitrii K", email = "dmitriik@proton.me" }]
 license = { text = "MIT" }
